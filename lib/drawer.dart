@@ -23,8 +23,8 @@ class MyDrawer extends StatelessWidget {
                   title: Text('Mots de passe'),
                   leading: Icon(Icons.vpn_key),
                   onTap: () {
+                    Navigator.pop(context);
                     Navigator.pushReplacementNamed(context, "/passwords");
-
                   },
                 ),
                 ListTile(

@@ -11,14 +11,10 @@ class MainLayout extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             print('Floating action button pressed');
-/*            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FirstRoute()),
-            );*/
             Navigator.pushNamed(context, "/password-create");
           },
           child: const Icon(Icons.add),
-          tooltip: "test9"),
+          tooltip: "Ajouter"),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       bottomNavigationBar: BottomBar(),
     );
