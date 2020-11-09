@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pass_manager/passwords/password-generation.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 
-import '../database.dart';
-import 'models/password.dart';
+import '../database.helper.dart';
+import 'package:pass_manager/passwords/password-generation.dart';
+import 'entity/password.entity.dart';
 
 class PasswordCreation extends StatefulWidget {
   @override
@@ -23,18 +21,12 @@ class _PasswordCreationState extends State<PasswordCreation> {
   final dbHelper = DatabaseHelper.instance;
 
   Future<void> insertPassword() async {
-    Password password = new Password(label: _nameController.text, login: _loginController.text, value: _passwordController.text, url: _urlController.text, comment: _commentController.text);
-    await dbHelper.insert(
-      'passwords',
-      password.toMap()
-    );
-    await passwords();
-  }
+    final passwordDao = await dbHelper.getPasswordDao();;
+    Password password = new Password(null, _nameController.text, _loginController.text, _passwordController.text, _urlController.text, _commentController.text);
+    await passwordDao.insertPassword(password);
 
-  Future<void> passwords() async {
-    final allRows = await dbHelper.getAll('passwords');
-    print('query all rows:');
-    allRows.forEach((row) => print(row));
+    final result = await passwordDao.findAllPasswords();
+    print(result);
   }
 
   void _handlePasswordGeneration() async {
