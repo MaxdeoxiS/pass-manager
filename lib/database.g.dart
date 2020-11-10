@@ -80,7 +80,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `login` TEXT, `value` TEXT, `url` TEXT, `comment` TEXT)');
+            'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `login` TEXT, `value` TEXT, `url` TEXT, `comment` TEXT, `color` TEXT, `updated` INTEGER)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -106,7 +106,39 @@ class _$PasswordDao extends PasswordDao {
                   'login': item.login,
                   'value': item.value,
                   'url': item.url,
-                  'comment': item.comment
+                  'comment': item.comment,
+                  'color': item.color,
+                  'updated': _dateTimeConverter.encode(item.updated)
+                },
+            changeListener),
+        _passwordUpdateAdapter = UpdateAdapter(
+            database,
+            'Password',
+            ['id'],
+            (Password item) => <String, dynamic>{
+                  'id': item.id,
+                  'name': item.name,
+                  'login': item.login,
+                  'value': item.value,
+                  'url': item.url,
+                  'comment': item.comment,
+                  'color': item.color,
+                  'updated': _dateTimeConverter.encode(item.updated)
+                },
+            changeListener),
+        _passwordDeletionAdapter = DeletionAdapter(
+            database,
+            'Password',
+            ['id'],
+            (Password item) => <String, dynamic>{
+                  'id': item.id,
+                  'name': item.name,
+                  'login': item.login,
+                  'value': item.value,
+                  'url': item.url,
+                  'comment': item.comment,
+                  'color': item.color,
+                  'updated': _dateTimeConverter.encode(item.updated)
                 },
             changeListener);
 
@@ -118,6 +150,10 @@ class _$PasswordDao extends PasswordDao {
 
   final InsertionAdapter<Password> _passwordInsertionAdapter;
 
+  final UpdateAdapter<Password> _passwordUpdateAdapter;
+
+  final DeletionAdapter<Password> _passwordDeletionAdapter;
+
   @override
   Future<List<Password>> findAllPasswords() async {
     return _queryAdapter.queryList('SELECT * FROM Password',
@@ -127,7 +163,9 @@ class _$PasswordDao extends PasswordDao {
             row['login'] as String,
             row['value'] as String,
             row['url'] as String,
-            row['comment'] as String));
+            row['comment'] as String,
+            row['color'] as String,
+            _dateTimeConverter.decode(row['updated'] as int)));
   }
 
   @override
@@ -142,11 +180,26 @@ class _$PasswordDao extends PasswordDao {
             row['login'] as String,
             row['value'] as String,
             row['url'] as String,
-            row['comment'] as String));
+            row['comment'] as String,
+            row['color'] as String,
+            _dateTimeConverter.decode(row['updated'] as int)));
   }
 
   @override
   Future<void> insertPassword(Password password) async {
     await _passwordInsertionAdapter.insert(password, OnConflictStrategy.abort);
   }
+
+  @override
+  Future<void> updatePassword(Password password) async {
+    await _passwordUpdateAdapter.update(password, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deletePassword(Password password) async {
+    await _passwordDeletionAdapter.delete(password);
+  }
 }
+
+// ignore_for_file: unused_element
+final _dateTimeConverter = DateTimeConverter();

@@ -10,7 +10,6 @@ class MainLayout extends StatelessWidget {
       body: body,
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            print('Floating action button pressed');
             Navigator.pushNamed(context, "/password-create");
           },
           child: const Icon(Icons.add),

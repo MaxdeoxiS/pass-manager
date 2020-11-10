@@ -10,6 +10,8 @@ class Password {
   final String value;
   final String url;
   final String comment;
+  final String color;
+  final DateTime updated;
 
-  Password(this.id, this.name, this.login, this.value, this.url, this.comment);
+  Password(this.id, this.name, this.login, this.value, this.url, this.comment, this.color, this.updated);
 }

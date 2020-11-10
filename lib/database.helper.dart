@@ -4,8 +4,7 @@ import 'database.dart';
 
 class DatabaseHelper {
 
-  static final _databaseName = "pass_manager.db";
-  static final _databaseVersion = 1;
+  static final _databaseName = "pass_manager_2.db";
 
   DatabaseHelper._privateConstructor();
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();

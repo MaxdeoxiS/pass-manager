@@ -21,12 +21,19 @@ class _PasswordCreationState extends State<PasswordCreation> {
   final dbHelper = DatabaseHelper.instance;
 
   Future<void> insertPassword() async {
-    final passwordDao = await dbHelper.getPasswordDao();;
-    Password password = new Password(null, _nameController.text, _loginController.text, _passwordController.text, _urlController.text, _commentController.text);
+    final passwordDao = await dbHelper.getPasswordDao();
+    Password password = new Password(
+        null,
+        _nameController.text,
+        _loginController.text,
+        _passwordController.text,
+        _urlController.text,
+        _commentController.text,
+        null,
+        new DateTime.now()
+    );
     await passwordDao.insertPassword(password);
-
-    final result = await passwordDao.findAllPasswords();
-    print(result);
+    Navigator.pushReplacementNamed(context, "/passwords");
   }
 
   void _handlePasswordGeneration() async {

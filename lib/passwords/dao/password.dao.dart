@@ -11,4 +11,10 @@ abstract class PasswordDao {
 
   @insert
   Future<void> insertPassword(Password password);
+
+  @update
+  Future<void> updatePassword(Password password);
+
+  @delete
+  Future<void> deletePassword(Password password);
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pass_manager/passwords/entity/password.entity.dart';
 import 'package:pass_manager/passwords/password-creation.dart';
+import 'package:pass_manager/passwords/password-view.dart';
 import 'package:pass_manager/passwords/passwords-list.dart';
 
 import 'main-page.dart';
@@ -26,6 +28,10 @@ class MainApp extends StatelessWidget {
         break;
       case "/password-create":
         page = buildPageRoute(PasswordCreation());
+        break;
+      case "/password":
+        ScreenArguments args = settings.arguments;
+        page = buildPageRoute(PasswordView(password: args.password, onDelete: args.onDelete));
         break;
     }
     return page;
