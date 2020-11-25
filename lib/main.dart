@@ -30,8 +30,8 @@ class MainApp extends StatelessWidget {
         page = buildPageRoute(PasswordCreation());
         break;
       case "/password":
-        ScreenArguments args = settings.arguments;
-        page = buildPageRoute(PasswordView(password: args.password, onDelete: args.onDelete));
+        PasswordViewArguments args = settings.arguments;
+        page = buildPageRoute(PasswordView(password: args.password, onDelete: args.onDelete, onUpdate: args.onUpdate));
         break;
     }
     return page;

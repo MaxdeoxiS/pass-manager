@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:pass_manager/utils/color.helper.dart';
 
 import '../database.helper.dart';
 import 'package:pass_manager/passwords/password-generation.dart';
@@ -16,30 +18,58 @@ class _PasswordCreationState extends State<PasswordCreation> {
   final _nameController = TextEditingController();
   final _urlController = TextEditingController();
   final _commentController = TextEditingController();
+  Color currentColor = Color(0xff607d8b);
   bool _passwordVisible = false;
+  bool isFavorite = false;
 
   final dbHelper = DatabaseHelper.instance;
 
   Future<void> insertPassword() async {
     final passwordDao = await dbHelper.getPasswordDao();
     Password password = new Password(
-        null,
         _nameController.text,
         _loginController.text,
         _passwordController.text,
         _urlController.text,
         _commentController.text,
-        null,
-        new DateTime.now()
+        new DateTime.now(),
+        currentColor,
+        isFavorite
     );
     await passwordDao.insertPassword(password);
     Navigator.pushReplacementNamed(context, "/passwords");
   }
 
   void _handlePasswordGeneration() async {
-    String rep = await _showPasswordGenerationDialog(this.context);
+    String rep = await _showPasswordGenerationDialog(this.context, currentColor);
     setState(() {
       _passwordController.text = rep;
+    });
+  }
+
+  void changeColor(Color color) {
+    print(color);
+    setState(() => currentColor = color);
+  }
+
+  void _showColorPicker() {
+    showDialog(
+      context: context,
+      child: AlertDialog(
+        title: const Text('Pick a color!'),
+        content: SingleChildScrollView(
+          child: BlockPicker(
+             pickerColor: currentColor,
+             onColorChanged: changeColor,
+           ),
+        )
+      ),
+    );
+  }
+
+  void _toggleFavorite() {
+    setState(() {
+      isFavorite = !isFavorite;
     });
   }
 
@@ -58,7 +88,9 @@ class _PasswordCreationState extends State<PasswordCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ajouter un mot de passe'),
+        title: Text('Ajouter un mot de passe', style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+        backgroundColor: currentColor,
+        iconTheme: IconThemeData(color: ColorHelper.getTextContrastedColor(currentColor)),
       ),
       body: Form(
         key: _formKey,
@@ -67,6 +99,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
           child: Column(
             children: [
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ...[
                     TextFormField(
@@ -91,7 +124,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
                               suffixIcon: IconButton(
                                   icon: Icon(_passwordVisible
                                       ? Icons.visibility_off
-                                      : Icons.visibility),
+                                      : Icons.visibility, color: currentColor),
                                   onPressed: () {
                                     setState(() {
                                       _passwordVisible = !_passwordVisible;
@@ -134,13 +167,22 @@ class _PasswordCreationState extends State<PasswordCreation> {
                       )
                     ],
                   ),
+                  Row(
+                    children: [
+                      FlatButton(onPressed: () => _showColorPicker(), child: Text("Couleur", style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))), color: currentColor),
+                      IconButton(icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_outline, size: 30), onPressed: () => _toggleFavorite(), color: currentColor),
+                    ],
+                  )
                 ],
               ),
               Expanded(
                   child: new Align(
                       alignment: Alignment.bottomCenter,
-                      child: ElevatedButton(
-                          onPressed: () => insertPassword(), child: Text("Créer"))))
+                      child: FlatButton(
+                          onPressed: () => insertPassword(),
+                          child: Text("Créer", style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+                          color: currentColor)
+                      ))
             ],
           ),
         ),
@@ -149,10 +191,10 @@ class _PasswordCreationState extends State<PasswordCreation> {
   }
 }
 
-Future<String> _showPasswordGenerationDialog(BuildContext context) async {
+Future<String> _showPasswordGenerationDialog(BuildContext context, Color color) async {
   return await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
-        return PasswordGeneration();
+        return PasswordGeneration(color);
       });
 }

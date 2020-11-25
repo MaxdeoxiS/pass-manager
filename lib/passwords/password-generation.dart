@@ -10,6 +10,10 @@ const LOWERCASE_WEIGHT = 2;
 const SYMBOLS_WEIGHT = 1;
 
 class PasswordGeneration extends StatefulWidget {
+  final Color color;
+
+  PasswordGeneration(this.color);
+
   @override
   _PasswordGenerationState createState() => _PasswordGenerationState();
 }
@@ -128,7 +132,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
     return await showDialog<List<String>>(
         context: context,
         builder: (BuildContext context) {
-          return SymbolsSelection(symbols: _symbols, selected: _selectedSymbols);
+          return SymbolsSelection(symbols: _symbols, selected: _selectedSymbols, color: widget.color);
         });
   }
 
@@ -144,7 +148,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
     return SimpleDialog(
       children: <Widget>[
         Container(
-            color: Colors.red,
+            color: widget.color,
             padding: EdgeInsets.all(16),
             child: Row(
               children: [
@@ -154,7 +158,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: _password.length >= 20 ? 18 : 22,
+                        fontSize: _password.length >= 20 ? 15 : 18,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -186,7 +190,10 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
                     _passwordLength = newValue.round();
                   });
                   this._generatePassword();
-                }),
+                },
+              activeColor: widget.color,
+              inactiveColor: widget.color.withOpacity(0.5)
+            ),
           ],
         ),
         Divider(),
@@ -199,7 +206,9 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
               });
               this._generatePassword();
             },
-            secondary: const Icon(Icons.text_fields)),
+            activeColor: widget.color,
+            secondary: Icon(Icons.text_fields, color: widget.color),
+        ),
         CheckboxListTile(
           title: const Text('Majuscules'),
           value: _includeUppercase,
@@ -209,7 +218,8 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
             });
             this._generatePassword();
           },
-          secondary: const Icon(Icons.title),
+          activeColor: widget.color,
+          secondary: Icon(Icons.title, color: widget.color),
         ),
         CheckboxListTile(
           title: const Text('Chiffres'),
@@ -220,7 +230,8 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
             });
             this._generatePassword();
           },
-          secondary: const Icon(Icons.looks_one),
+          activeColor: widget.color,
+          secondary: Icon(Icons.looks_one, color: widget.color),
         ),
         CheckboxListTile(
           title: Row(
@@ -228,7 +239,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
               Expanded(
                 child: const Text('Symboles'),
               ),
-              IconButton(icon: Icon(Icons.settings), color: Colors.red, onPressed: () {
+              IconButton(icon: Icon(Icons.settings), color: widget.color, onPressed: () {
                 _handleSymbolsSelection();
               }),
             ],
@@ -240,7 +251,8 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
             });
             this._generatePassword();
           },
-          secondary: Icon(Icons.emoji_symbols),
+          activeColor: widget.color,
+          secondary: Icon(Icons.emoji_symbols, color: widget.color),
         ),
         Divider(),
         Row(
@@ -248,7 +260,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
           mainAxisSize: MainAxisSize.min,
           children: [
             RaisedButton(
-              color: Colors.red,
+              color: widget.color,
               textColor: Colors.white,
               onPressed: () {
                 Navigator.pop(context, _password);

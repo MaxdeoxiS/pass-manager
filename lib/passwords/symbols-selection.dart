@@ -2,11 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:pass_manager/utils/color.helper.dart';
+
 class SymbolsSelection extends StatefulWidget {
   final List<String> symbols;
   final List<String> selected;
+  final Color color;
 
-  SymbolsSelection({this.symbols, this.selected});
+  SymbolsSelection({this.symbols, this.selected, this.color});
 
   @override
   _SymbolsSelectionState createState() => _SymbolsSelectionState();
@@ -53,11 +56,9 @@ class _SymbolsSelectionState extends State<SymbolsSelection> {
                   .map((sym) => FlatButton(
                         onPressed: () => _toggleSelect(sym),
                         color: _selectedSymbols.contains(sym)
-                            ? Colors.red
+                            ? widget.color
                             : Colors.white,
-                        textColor: _selectedSymbols.contains(sym)
-                            ? Colors.white
-                            : Colors.black,
+                        textColor: ColorHelper.getTextContrastedColor(_selectedSymbols.contains(sym) ? widget.color : Colors.white),
                         child: Text(
                           '$sym',
                           style: TextStyle(
@@ -70,8 +71,8 @@ class _SymbolsSelectionState extends State<SymbolsSelection> {
                   .toList()),
         ),
         actions: [
-          FlatButton(onPressed: () => Navigator.pop(context), child: Text("Annuler")),
-          FlatButton(onPressed: () => Navigator.pop(context, _selectedSymbols), child: Text("Valider"))
+          FlatButton(onPressed: () => Navigator.pop(context), child: Text("Annuler", style: TextStyle(color: widget.color))),
+          FlatButton(onPressed: () => Navigator.pop(context, _selectedSymbols), child: Text("Valider", style: TextStyle(color: widget.color)))
         ],
       actionsPadding: EdgeInsets.symmetric(vertical: 0),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pass_manager/passwords/dao/password.dao.dart';
+import 'package:pass_manager/utils/color.helper.dart';
 
 import '../database.helper.dart';
 import 'entity/password.entity.dart';
@@ -29,6 +30,19 @@ class _PasswordListState extends State<PasswordList> {
     await _updateList();
   }
 
+  void _toggleFavorite(Password password) async {
+    PasswordDao passwordDao = await dbHelper.getPasswordDao();
+    Password newPassword = Password(password.name, password.login, password.value, password.url, password.comment, password.updated, password.color, !password.isFavorite, password.id);
+    await passwordDao.updatePassword(newPassword);
+    await _updateList();
+  }
+
+  void _onUpdate(Password password) async {
+    PasswordDao passwordDao = await dbHelper.getPasswordDao();
+    await passwordDao.updatePassword(password);
+    await _updateList();
+  }
+
   @override
   void initState() {
     _updateList();
@@ -42,13 +56,13 @@ class _PasswordListState extends State<PasswordList> {
         itemCount: items.length,
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text('${items[index].name}'),
-            subtitle: Text('${items[index].login}'),
-            leading: IconButton(icon: Icon(Icons.circle), onPressed: () {}),
-            trailing: IconButton(icon: Icon(Icons.favorite_outline), onPressed: () {}),
+            title: Text('${items[index].name}', style: TextStyle(color: ColorHelper.getTextContrastedColor(items[index].color), fontWeight: FontWeight.w500)),
+            subtitle: Text('${items[index].login}', style: TextStyle(color: ColorHelper.getTextContrastedColor(items[index].color))),
+            trailing: IconButton(icon: Icon(items[index].isFavorite ? Icons.favorite : Icons.favorite_outline), onPressed: () => _toggleFavorite(items[index])),
             onTap: () {
-              Navigator.pushNamed(context, '/password', arguments: ScreenArguments(items[index], this._deletePassword));
-            }
+              Navigator.pushNamed(context, '/password', arguments: PasswordViewArguments(items[index], this._deletePassword, this._onUpdate));
+            },
+            tileColor: items[index].color ?? Colors.white
           );
         },
       ) : Text("Aucun mot de passe enregistré"),
@@ -57,9 +71,10 @@ class _PasswordListState extends State<PasswordList> {
 }
 
 typedef void MyCallback(Password password);
-class ScreenArguments {
+class PasswordViewArguments {
   final Password password;
   final MyCallback onDelete;
+  final MyCallback onUpdate;
 
-  ScreenArguments(this.password, this.onDelete);
+  PasswordViewArguments(this.password, this.onDelete, this.onUpdate);
 }
