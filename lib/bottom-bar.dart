@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:pass_manager/passwords/favorites_block.dart';
 
-class BottomBar extends StatelessWidget {
+class BottomBar extends StatefulWidget {
+  BottomBar({Key key}) : super(key: key);
+  _BottomBarState createState() => _BottomBarState();
+}
+
+class _BottomBarState extends State<BottomBar> {
+  bool filterOnFavorites = false;
+
+  _onFavoritePressed() {
+    bloc.toggleFavorites();
+    setState(() {
+      filterOnFavorites = !filterOnFavorites;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -19,11 +34,9 @@ class BottomBar extends StatelessWidget {
             ),
             IconButton(
               tooltip: "test11",
-              icon: Icon(Icons.favorite_outline,
+              icon: Icon(filterOnFavorites ? Icons.favorite : Icons.favorite_outline,
                   color: Theme.of(context).colorScheme.primary),
-              onPressed: () {
-                print('Favorite button pressed');
-              },
+              onPressed: () => _onFavoritePressed(),
             ),
           ],
         ),

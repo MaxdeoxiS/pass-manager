@@ -21,8 +21,6 @@ class MainApp extends StatelessWidget {
     Route page;
     switch (settings.name) {
       case "/":
-        page = buildPageRoute(MainPage(body: PasswordList(), title: Text("Home")));
-        break;
       case "/passwords":
         page = buildPageRoute(MainPage(body: PasswordList(), title: Text("Home")));
         break;

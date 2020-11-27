@@ -52,6 +52,10 @@ class _PasswordViewState extends State<PasswordView> {
     }
   }
 
+  _openDeleteConfirmationDialog() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,8 +78,8 @@ class _PasswordViewState extends State<PasswordView> {
                               onPressed: () => _onBackPressed(),
                               color: Colors.white),
                           IconButton(
-                              icon: Icon(password.isFavorite ? Icons.favorite : Icons.favorite_outline),
-                              onPressed: () => _toggleFavorite(),
+                              icon: Icon(Icons.delete),
+                              onPressed: () => _openDeleteConfirmationDialog(),
                               color: Colors.white),
                         ],
                       ),
@@ -145,16 +149,19 @@ class _PasswordViewState extends State<PasswordView> {
                   ),
                   Label('Commentaire'),
                   Text(this.password.comment),
-                  Label('Dernière mise à jour'),
-                  Text(this.password.updated.toString())
+                  Label('Dernière mise à jour du mot de passe'),
+                  Text(this.password.updated.toLocal().toString()),
+                  IconButton(
+                      icon: Icon(password.isFavorite ? Icons.favorite : Icons.favorite_outline),
+                      onPressed: () => _toggleFavorite(),
+                      color: password.color),
                 ],
               )),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                BottomButton('Modifier', Colors.blue, () => {}),
-                BottomButton('Supprimer', Colors.red, () => {})
+                BottomButton('Modifier', password.color, () => {})
               ],
             ),
           ),
