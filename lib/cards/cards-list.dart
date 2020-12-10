@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class NoteList extends StatefulWidget {
-  NoteList({Key key}) : super(key: key);
-  _NoteListState createState() => _NoteListState();
+class CardList extends StatefulWidget {
+  CardList({Key key}) : super(key: key);
+  _CardListState createState() => _CardListState();
 }
 
-class _NoteListState extends State<NoteList> {
+class _CardListState extends State<CardList> {
   @override
   void initState() {
     super.initState();

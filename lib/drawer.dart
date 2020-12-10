@@ -23,7 +23,6 @@ class MyDrawer extends StatelessWidget {
                   title: Text('Mots de passe'),
                   leading: Icon(Icons.vpn_key),
                   onTap: () {
-                    Navigator.pop(context);
                     Navigator.pushReplacementNamed(context, "/passwords");
                   },
                 ),
@@ -31,14 +30,14 @@ class MyDrawer extends StatelessWidget {
                   title: Text('Notes sécurisées'),
                   leading: Icon(Icons.description),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, "/notes");
                   },
                 ),
                 ListTile(
                   title: Text('Cartes'),
                   leading: Icon(Icons.credit_card),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, "/cards");
                   },
                 ),
               ],

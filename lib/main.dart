@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pass_manager/passwords/entity/password.entity.dart';
 import 'package:pass_manager/passwords/password-creation.dart';
 import 'package:pass_manager/passwords/password-view.dart';
 import 'package:pass_manager/passwords/passwords-list.dart';
 
+import 'cards/cards-list.dart';
 import 'main-page.dart';
+import 'notes/notes-list.dart';
 
 void main() => runApp(MainApp());
 
@@ -22,7 +23,13 @@ class MainApp extends StatelessWidget {
     switch (settings.name) {
       case "/":
       case "/passwords":
-        page = buildPageRoute(MainPage(body: PasswordList(), title: Text("Home")));
+        page = buildPageRoute(MainPage(body: PasswordList(), title: Text("Mots de passe")));
+        break;
+      case "/notes":
+        page = buildPageRoute(MainPage(body: NoteList(), title: Text("Notes")));
+        break;
+      case "/cards":
+        page = buildPageRoute(MainPage(body: CardList(), title: Text("Cartes")));
         break;
       case "/password-create":
         page = buildPageRoute(PasswordCreation());

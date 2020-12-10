@@ -33,7 +33,7 @@ class _BottomBarState extends State<BottomBar> {
               },
             ),
             IconButton(
-              tooltip: "test11",
+              tooltip: "Filtrer sur les favoris",
               icon: Icon(filterOnFavorites ? Icons.favorite : Icons.favorite_outline,
                   color: Theme.of(context).colorScheme.primary),
               onPressed: () => _onFavoritePressed(),
