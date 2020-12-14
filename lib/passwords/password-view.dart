@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pass_manager/passwords/password-generation.dart';
 import 'package:pass_manager/passwords/passwords-list.dart';
+import 'package:pass_manager/utils/color.helper.dart';
 import 'package:pass_manager/utils/hex-color.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,6 +28,7 @@ class _PasswordViewState extends State<PasswordView> {
   final _urlController = TextEditingController();
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _commentController = TextEditingController();
 
   @override
   void initState() {
@@ -35,12 +37,14 @@ class _PasswordViewState extends State<PasswordView> {
     _urlController.text = password.url;
     _nameController.text = password.name;
     _passwordController.text = password.value;
+    _commentController.text = password.comment;
     super.initState();
   }
 
   _toggleFavorite() {
     setState(() {
       password.isFavorite = !password.isFavorite;
+      widget.onUpdate(password);
     });
   }
 
@@ -57,7 +61,6 @@ class _PasswordViewState extends State<PasswordView> {
   }
 
   _onBackPressed() {
-    widget.onUpdate(password);
     Navigator.pop(context);
   }
 
@@ -89,6 +92,7 @@ class _PasswordViewState extends State<PasswordView> {
     _urlController.dispose();
     _nameController.dispose();
     _passwordController.dispose();
+    _commentController.dispose();
     super.dispose();
   }
 
@@ -103,21 +107,32 @@ class _PasswordViewState extends State<PasswordView> {
                 child: Container(
                   color: this.password.color ?? DEFAULT_COLOR,
                   height: MediaQuery.of(context).size.height * .2,
-                  padding: EdgeInsets.only(top: 24, bottom: 16),
+                  padding: EdgeInsets.only(top: 24),
+                  margin: EdgeInsets.only(bottom: 8),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(
-                              icon: Icon(Icons.arrow_back), onPressed: () => _onBackPressed(), color: Colors.white),
+                              icon: Icon(Icons.arrow_back), onPressed: () => _onBackPressed(), color: ColorHelper.getTextContrastedColor(password.color)),
                           IconButton(
                               icon: Icon(Icons.delete),
                               onPressed: () => _handlePasswordDeletion(),
-                              color: Colors.white),
+                              color: ColorHelper.getTextContrastedColor(password.color)),
                         ],
                       ),
-                      Text(_nameController.text, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500)),
+                          Text(_nameController.text, style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500, color: ColorHelper.getTextContrastedColor(password.color))),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                              icon: Icon(password.isFavorite ? Icons.favorite : Icons.favorite_outline, color: ColorHelper.getTextContrastedColor(password.color)),
+                            onPressed: () => _toggleFavorite(),
+                          )
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -129,87 +144,17 @@ class _PasswordViewState extends State<PasswordView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Stack(
-                    children: [
-                      Label('Identifiant'),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        children: [
-                          (this._isEditing
-                              ? Expanded(
-                                  child: TextField(
-                                  controller: _loginController,
-                                  decoration:
-                                      InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
-                                ))
-                              : Text(this.password.login, style: TextStyle(fontSize: 17))),
-                          IconButton(icon: Icon(Icons.copy), onPressed: () => {})
-                        ],
-                      ),
-                    ],
-                  ),
-                  Stack(
-                    children: [
-                      Label('Mot de passe'),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        children: [
-                          Text(
-                              _hidePassword
-                                  ? _passwordController.text.replaceAll(new RegExp(r'.'), '*')
-                                  : _passwordController.text,
-                              style: TextStyle(fontSize: 17)),
-                          Row(
-                            children: [
-                              _isEditing
-                                  ? (IconButton(
-                                      icon: Icon(Icons.refresh), onPressed: () => _handlePasswordGeneration()))
-                                  : Container(),
-                              IconButton(
-                                  icon: Icon(_hidePassword ? Icons.visibility_off : Icons.visibility),
-                                  onPressed: () => _toggleHidePassword()),
-                              IconButton(icon: Icon(Icons.copy), onPressed: () => {})
-                            ],
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  Stack(
-                    children: [
-                      Label('URL'),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        children: [
-                          (this._isEditing
-                              ? Expanded(
-                                  child: TextField(
-                                  controller: _urlController,
-                                  decoration:
-                                      InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
-                                ))
-                              : Text(_urlController.text, style: TextStyle(fontSize: 16))),
-                          Row(
-                            children: [
-                              IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url)),
-                              IconButton(icon: Icon(Icons.copy), onPressed: () => {})
-                            ],
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                  Label('Commentaire'),
-                  Text(this.password.comment),
+                  FieldRow(_loginController, _isEditing, 'Identifiant', []),
+                  FieldRow(_passwordController, _isEditing, 'Mot de passe', [
+                        _isEditing ? (IconButton(icon: Icon(Icons.refresh), onPressed: () => _handlePasswordGeneration())) : Container(),
+                        IconButton(icon: Icon(_hidePassword ? Icons.visibility_off : Icons.visibility), onPressed: () => _toggleHidePassword())
+                      ],
+                      _hidePassword),
+                  FieldRow(_urlController, _isEditing, 'URL', [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
+                  FieldRow(_commentController, _isEditing, 'Commentaire', []),
+                  FieldRow(_loginController, _isEditing, 'Expiration', [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
                   Label('Dernière mise à jour du mot de passe'),
                   Text(this.password.updated.toLocal().toString()),
-                  IconButton(
-                      icon: Icon(password.isFavorite ? Icons.favorite : Icons.favorite_outline),
-                      onPressed: () => _toggleFavorite(),
-                      color: password.color),
                 ],
               )),
           Expanded(
@@ -240,6 +185,64 @@ class Label extends StatelessWidget {
   }
 }
 
+class EditableField extends StatelessWidget {
+  final TextEditingController controller;
+  final bool editing;
+  final bool hide;
+
+  EditableField(this.controller, this.editing, [this.hide = false]);
+
+  String _hide(String text) {
+    return text.replaceAll(new RegExp(r'.'), '*');
+  }
+
+  String _displayValue(String text) {
+    if (this.hide) {
+      return this._hide(controller.text);
+    } else {
+      return (controller.text != null && controller.text.length > 0) ? controller.text : '-';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (this.editing
+        ? Expanded(
+            child: TextField(
+                controller: controller,
+                decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
+                obscureText: this.hide))
+        : Text(_displayValue(controller.text), style: TextStyle(fontSize: 16)));
+  }
+}
+
+class FieldRow extends StatelessWidget {
+  final TextEditingController controller;
+  final bool editing;
+  final String label;
+  final bool hide;
+  final List<Widget> actions;
+
+  FieldRow(this.controller, this.editing, this.label, this.actions, [this.hide = false]);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Label(label),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          children: [
+            EditableField(controller, editing, hide),
+            Row(children: [...actions.map((widget) => widget).toList(), IconButton(icon: Icon(Icons.copy), onPressed: () => {})])
+          ],
+        ),
+      ],
+    );
+  }
+}
+
 class BottomButton extends StatelessWidget {
   final String label;
   final Color color;
@@ -254,7 +257,7 @@ class BottomButton extends StatelessWidget {
         child: FlatButton(
           color: this.color,
           onPressed: this.onClick,
-          child: Text(this.label),
+          child: Text(this.label, style: TextStyle(color: ColorHelper.getTextContrastedColor(color))),
           height: 50,
         ),
       ),
@@ -275,17 +278,11 @@ Future<bool> _showPasswordDeletionDialog(BuildContext context) async {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("AlertDialog"),
-          content: Text("Would you like to continue learning how to use Flutter alerts?"),
+          title: Text("Attention"),
+          content: Text("Voulez-vous supprimer le mot de passe ?"),
           actions: [
-            FlatButton(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.pop(context, false)
-            ),
-            FlatButton(
-              child: Text("Continue"),
-              onPressed: () => Navigator.pop(context, true)
-            )
+            FlatButton(child: Text("Annuler"), onPressed: () => Navigator.pop(context, false)),
+            FlatButton(child: Text("Supprimer"), onPressed: () => Navigator.pop(context, true))
           ],
         );
       });
