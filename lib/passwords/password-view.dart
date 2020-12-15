@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:pass_manager/passwords/password-generation.dart';
 import 'package:pass_manager/passwords/passwords-list.dart';
 import 'package:pass_manager/utils/color.helper.dart';
-import 'package:pass_manager/utils/hex-color.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:clipboard/clipboard.dart';
 
 import 'entity/password.entity.dart';
 
@@ -225,6 +225,12 @@ class FieldRow extends StatelessWidget {
 
   FieldRow(this.controller, this.editing, this.label, this.actions, [this.hide = false]);
 
+  void _copyText(BuildContext context) {
+    FlutterClipboard.copy(controller.text);
+    final snackBar = SnackBar(content: Text(label + ' copié(e) !'), duration: Duration(milliseconds: 1250));
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -235,7 +241,7 @@ class FieldRow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           children: [
             EditableField(controller, editing, hide),
-            Row(children: [...actions.map((widget) => widget).toList(), IconButton(icon: Icon(Icons.copy), onPressed: () => {})])
+            Row(children: [...actions.map((widget) => widget).toList(), IconButton(icon: Icon(Icons.copy), onPressed: () => _copyText(context))])
           ],
         ),
       ],

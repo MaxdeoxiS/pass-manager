@@ -8,9 +8,9 @@ class ColorHelper {
     double luminance = ( 0.299 * backgroundColor.red + 0.587 * backgroundColor.green + 0.114 * backgroundColor.blue)/255;
 
     if (luminance > 0.5)
-      d = 0; // bright colors - black font
+      d = 30; // bright colors - black font
     else
-      d = 255; // dark colors - white font
+      d = 245; // dark colors - white font
 
     return Color.fromARGB(255, d, d, d);
   }
