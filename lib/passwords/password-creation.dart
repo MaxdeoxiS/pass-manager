@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 
-import '../database.helper.dart';
+import '../utils/database/database.helper.dart';
 import 'package:pass_manager/passwords/password-generation.dart';
 import 'entity/password.entity.dart';
 

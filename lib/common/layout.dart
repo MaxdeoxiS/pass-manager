@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pass_manager/bottom-bar.dart';
+import 'package:pass_manager/common/bottom-bar.dart';
 
-class MainLayout extends StatelessWidget {
+class Layout extends StatelessWidget {
   final Widget body;
-  MainLayout({this.body});
+  Layout({this.body});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

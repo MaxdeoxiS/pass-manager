@@ -10,6 +10,7 @@ class _BottomBarState extends State<BottomBar> {
   bool filterOnFavorites = false;
 
   _onFavoritePressed() {
+    // Trigger event to update view with favorites only or not
     bloc.toggleFavorites();
     setState(() {
       filterOnFavorites = !filterOnFavorites;
@@ -25,7 +26,7 @@ class _BottomBarState extends State<BottomBar> {
         child: Row(
           children: [
             IconButton(
-              tooltip: "test10",
+              tooltip: "Rechercher",
               icon: Icon(Icons.search,
                   color: Theme.of(context).colorScheme.primary),
               onPressed: () {

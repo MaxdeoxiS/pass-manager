@@ -1,15 +1,17 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Page;
 import 'package:pass_manager/passwords/password-creation.dart';
 import 'package:pass_manager/passwords/password-view.dart';
 import 'package:pass_manager/passwords/passwords-list.dart';
 
 import 'cards/cards-list.dart';
-import 'main-page.dart';
+import 'common/page.dart';
 import 'notes/notes-list.dart';
 
 void main() => runApp(MainApp());
 
 class MainApp extends StatelessWidget {
+
+  /// Build page route with provided [page] content
   PageRouteBuilder buildPageRoute(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (_, __, ___) => page,
@@ -18,18 +20,21 @@ class MainApp extends StatelessWidget {
       },
     );
   }
+
+  /// App routing
+  /// Takes [settings] parameter to pass arguments to each page
   Route onGenerateRoute(RouteSettings settings) {
     Route page;
     switch (settings.name) {
       case "/":
       case "/passwords":
-        page = buildPageRoute(MainPage(body: PasswordList(), title: Text("Mots de passe")));
+        page = buildPageRoute(Page(body: PasswordList(), title: Text("Mots de passe")));
         break;
       case "/notes":
-        page = buildPageRoute(MainPage(body: NoteList(), title: Text("Notes")));
+        page = buildPageRoute(Page(body: NoteList(), title: Text("Notes")));
         break;
       case "/cards":
-        page = buildPageRoute(MainPage(body: CardList(), title: Text("Cartes")));
+        page = buildPageRoute(Page(body: CardList(), title: Text("Cartes")));
         break;
       case "/password-create":
         page = buildPageRoute(PasswordCreation());
@@ -41,10 +46,11 @@ class MainApp extends StatelessWidget {
     }
     return page;
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Gestionnaire mdp',
+        title: 'Pass manager',
         theme: ThemeData(
           primaryColor: Colors.red,
           primarySwatch: Colors.red,

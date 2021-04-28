@@ -3,18 +3,18 @@ import 'dart:async';
 import 'favorites_provider.dart';
 
 class FavoritesBloc {
-  final counterController = StreamController<bool>.broadcast();
+  final favoritesController = StreamController<bool>.broadcast();
   final FavoritesProvider provider = FavoritesProvider();
 
-  Stream get getFavorites => counterController.stream;
+  Stream get getFavorites => favoritesController.stream;
 
   void toggleFavorites() {
     provider.toggleFavorites();
-    counterController.sink.add(provider.favorites);
+    favoritesController.sink.add(provider.favorites);
   }
 
   void dispose() {
-    counterController.close(); // close our StreamController
+    favoritesController.close(); // close our StreamController
   }
 }
 

@@ -6,6 +6,7 @@ import 'package:pass_manager/passwords/passwords-list.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:intl/intl.dart';  //for date format
 
 import 'entity/password.entity.dart';
 
@@ -45,6 +46,19 @@ class _PasswordViewState extends State<PasswordView> {
     setState(() {
       password.isFavorite = !password.isFavorite;
       widget.onUpdate(password);
+    });
+  }
+
+  _updatePassword() {
+    password.login = _loginController.text;
+    password.url = _urlController.text;
+    password.name = _nameController.text;
+    password.value = _passwordController.text;
+    password.comment = _commentController.text;
+    password.updated = DateTime.now();
+    widget.onUpdate(password);
+    setState(() {
+      _isEditing = !_isEditing;
     });
   }
 
@@ -95,6 +109,8 @@ class _PasswordViewState extends State<PasswordView> {
     _commentController.dispose();
     super.dispose();
   }
+
+  DateFormat format = new DateFormat("dd/MM/yyyy HH:mm");
 
   @override
   Widget build(BuildContext context) {
@@ -152,24 +168,26 @@ class _PasswordViewState extends State<PasswordView> {
                       _hidePassword),
                   FieldRow(_urlController, _isEditing, 'URL', [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
                   FieldRow(_commentController, _isEditing, 'Commentaire', []),
-                  FieldRow(_loginController, _isEditing, 'Expiration', [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
+                  // FieldRow(_loginController, _isEditing, 'Expiration', [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
                   Label('Dernière mise à jour du mot de passe'),
-                  Text(this.password.updated.toLocal().toString()),
+                  Text(format.format(this.password.updated)),
                 ],
               )),
           Expanded(
+            flex: 1,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: _isEditing
                   ? [
                       BottomButton('Annuler', password.color, _toggleEdit),
-                      BottomButton('Valider', password.color, _toggleEdit)
+                      BottomButton('Valider', password.color, _updatePassword)
                     ]
                   : [BottomButton('Modifier', password.color, _toggleEdit)],
             ),
           ),
         ],
       ),
+        resizeToAvoidBottomInset: false
     );
   }
 }

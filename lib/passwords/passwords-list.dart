@@ -5,7 +5,7 @@ import 'package:pass_manager/passwords/dao/password.dao.dart';
 import 'package:pass_manager/passwords/favorites_provider.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 
-import '../database.helper.dart';
+import '../utils/database/database.helper.dart';
 import 'entity/password.entity.dart';
 import 'favorites_block.dart';
 
