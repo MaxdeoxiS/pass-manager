@@ -1,7 +1,0 @@
-- génération de mdp sécurisé, avec règles personnalisables (taille, caractères à inclure)
-- sauvegarde locale de mdp (label et mdp)
-- authentification empreinte digitale?
-- copier un mdp
-- auto remplir les champs de formulaire mdp
-
-inspi dashlane: https://support.dashlane.com/hc/article_attachments/360015212819/ezgif.com-crop.gif
