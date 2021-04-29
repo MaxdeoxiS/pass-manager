@@ -1,13 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:pass_manager/passwords/dao/password.dao.dart';
-import 'package:pass_manager/passwords/favorites_provider.dart';
+import 'package:pass_manager/passwords/utils/favorites_provider.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 
-import '../utils/database/database.helper.dart';
-import 'entity/password.entity.dart';
-import 'favorites_block.dart';
+import '../../utils/database/database.helper.dart';
+import '../entity/password.entity.dart';
+import '../utils/favorites_block.dart';
 
 class PasswordList extends StatefulWidget {
   PasswordList({Key key}) : super(key: key);

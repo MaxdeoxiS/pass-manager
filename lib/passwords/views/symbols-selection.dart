@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
 
 import 'package:pass_manager/utils/color.helper.dart';
 

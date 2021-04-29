@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pass_manager/passwords/favorites_block.dart';
+import 'package:pass_manager/passwords/utils/favorites_block.dart';
 
 class BottomBar extends StatefulWidget {
   BottomBar({Key key}) : super(key: key);

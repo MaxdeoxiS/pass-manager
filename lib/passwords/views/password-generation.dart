@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import 'package:pass_manager/passwords/symbols-selection.dart';
+import 'package:pass_manager/passwords/views/symbols-selection.dart';
 
 const DIGITS_WEIGHT = 2;
 const UPPERCASE_WEIGHT = 2;
@@ -271,6 +271,5 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
         )
       ],
     );
-    ;
   }
 }

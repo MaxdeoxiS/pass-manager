@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'favorites_provider.dart';
+import './favorites_provider.dart';
 
 class FavoritesBloc {
   final favoritesController = StreamController<bool>.broadcast();

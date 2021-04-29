@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide Page;
-import 'package:pass_manager/passwords/password-creation.dart';
-import 'package:pass_manager/passwords/password-view.dart';
-import 'package:pass_manager/passwords/passwords-list.dart';
+import 'package:pass_manager/passwords/views/password-creation.dart';
+import 'package:pass_manager/passwords/views/password-view.dart';
+import 'package:pass_manager/passwords/views/passwords-list.dart';
 
 import 'cards/cards-list.dart';
 import 'common/page.dart';

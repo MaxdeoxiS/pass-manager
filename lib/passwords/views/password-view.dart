@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:pass_manager/passwords/password-generation.dart';
-import 'package:pass_manager/passwords/passwords-list.dart';
+import 'package:pass_manager/passwords/views/password-generation.dart';
+import 'package:pass_manager/passwords/views/passwords-list.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:intl/intl.dart';  //for date format
 
-import 'entity/password.entity.dart';
+import '../entity/password.entity.dart';
 
 const DEFAULT_COLOR = Colors.red;
 
@@ -50,12 +50,15 @@ class _PasswordViewState extends State<PasswordView> {
   }
 
   _updatePassword() {
+    // If password has changed, update 'last password update'
+    if (password.value != _passwordController.text) {
+      password.updated = DateTime.now();
+    }
     password.login = _loginController.text;
     password.url = _urlController.text;
     password.name = _nameController.text;
     password.value = _passwordController.text;
     password.comment = _commentController.text;
-    password.updated = DateTime.now();
     widget.onUpdate(password);
     setState(() {
       _isEditing = !_isEditing;
