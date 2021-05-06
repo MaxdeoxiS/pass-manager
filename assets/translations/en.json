@@ -1,10 +1,50 @@
 {
-  "login":"Login",
-  "msg_named":"Easy localization are written in the {lang} language",
-  "msg_mixed":"{} are written in the {lang} language",
-  "gender":{
-    "male":"Hi man ;) {}",
-    "female":"Hello girl :) {}",
-    "other":"Hello {}"
+  "passwords": {
+    "title": "Passwords",
+    "login":"Login",
+    "password":"Password",
+    "URL":"URL",
+    "comment":"Comment",
+    "lastUpdate":"Password last modified date",
+    "edit":"Edit",
+    "editColor":"Change color",
+    "delete":"Delete",
+    "color":"Color",
+    "characters": "characters",
+    "lowercase": "Lowercase letters",
+    "uppercase": "Capital letters",
+    "digits": "Digits",
+    "symbols": "Symbols",
+    "siteName": "Site name",
+    "generate": "Generate",
+    "regenerate": "Re-generate",
+    "addPassword": "Add a new password",
+    "contentCopied": "{} copied",
+    "selectedSymbols": "{}/{} selected",
+    "colorChoice": "Pick a color",
+    "confirmDelete": "Remove password ?"
+  },
+  "notes": {
+    "title": "Secured notes"
+  },
+  "cards": {
+    "title": "Cards"
+  },
+  "settings": {
+    "title": "Settings",
+    "french": "French",
+    "english": "English"
+  },
+  "global": {
+    "validate": "Validate",
+    "cancel": "Cancel",
+    "create": "Create",
+    "warning": "Warning",
+    "delete": "Delete"
+  },
+  "bottomBar": {
+    "search": "Search",
+    "favoriteFilter": "Filter on favorites",
+    "categoryFilter": "Filter by category"
   }
 }

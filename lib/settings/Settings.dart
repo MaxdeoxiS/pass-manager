@@ -12,8 +12,8 @@ class Settings extends StatelessWidget {
           height: 100,
           child: Row(
             children: [
-              TextButton(onPressed: () => context.setLocale(Locale('fr', '')), child: Text("Français")),
-              TextButton(onPressed: () => context.setLocale(Locale('en', '')), child: Text("Anglais")),
+              TextButton(onPressed: () => context.setLocale(Locale('fr', '')), child: Text('settings.french'.tr())),
+              TextButton(onPressed: () => context.setLocale(Locale('en', '')), child: Text('settings.english'.tr())),
             ],
           )
         )

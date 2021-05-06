@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:pass_manager/utils/color.helper.dart';
 
@@ -38,7 +39,7 @@ class _SymbolsSelectionState extends State<SymbolsSelection> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        title: Center(child: Text('${_selectedSymbols.length}/${widget.symbols.length} sélectionnés')),
+        title: Center(child: Text('passwords.selectedSymbols'.tr(args: [_selectedSymbols.length.toString(), widget.symbols.length.toString()]))),
         titlePadding: EdgeInsets.symmetric(vertical: 8),
         titleTextStyle: TextStyle(fontSize: 16, color: Colors.black),
         contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -70,8 +71,8 @@ class _SymbolsSelectionState extends State<SymbolsSelection> {
                   .toList()),
         ),
         actions: [
-          FlatButton(onPressed: () => Navigator.pop(context), child: Text("Annuler", style: TextStyle(color: widget.color))),
-          FlatButton(onPressed: () => Navigator.pop(context, _selectedSymbols), child: Text("Valider", style: TextStyle(color: widget.color)))
+          FlatButton(onPressed: () => Navigator.pop(context), child: Text('global.cancel'.tr(), style: TextStyle(color: widget.color))),
+          FlatButton(onPressed: () => Navigator.pop(context, _selectedSymbols), child: Text('global.validate'.tr(), style: TextStyle(color: widget.color)))
         ],
       actionsPadding: EdgeInsets.symmetric(vertical: 0),
     );

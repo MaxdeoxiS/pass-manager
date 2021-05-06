@@ -120,7 +120,7 @@ class _PasswordViewState extends State<PasswordView> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            title: const Text('Choix de la couleur'),
+            title: Text('passwords.colorChoice'.tr()),
             content: SingleChildScrollView(
               child: BlockPicker(
                 pickerColor: _currentColor,
@@ -197,17 +197,17 @@ class _PasswordViewState extends State<PasswordView> {
                                 _handleMenuClick(result);
                               },
                               itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuOption>>[
-                                const PopupMenuItem<MenuOption>(
+                                PopupMenuItem<MenuOption>(
                                   value: MenuOption.edit,
-                                  child: Text('Modifier'),
+                                  child: Text('passwords.edit'.tr()),
                                 ),
-                                const PopupMenuItem<MenuOption>(
+                                PopupMenuItem<MenuOption>(
                                   value: MenuOption.color,
-                                  child: Text('Changer la couleur'),
+                                  child: Text('passwords.editColor'.tr()),
                                 ),
-                                const PopupMenuItem<MenuOption>(
+                                PopupMenuItem<MenuOption>(
                                   value: MenuOption.delete,
-                                  child: Text('Supprimer'),
+                                  child: Text('passwords.delete'.tr()),
                                 ),
                               ],
                             )
@@ -241,11 +241,11 @@ class _PasswordViewState extends State<PasswordView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    FieldRow(_loginController, _isEditing, 'login'.tr(), []),
+                    FieldRow(_loginController, _isEditing, 'passwords.login'.tr(), []),
                     FieldRow(
                         _passwordController,
                         _isEditing,
-                        'Mot de passe',
+                        'passwords.password'.tr(),
                         [
                           _isEditing
                               ? (IconButton(icon: Icon(Icons.refresh), onPressed: () => _handlePasswordGeneration()))
@@ -255,11 +255,11 @@ class _PasswordViewState extends State<PasswordView> {
                               onPressed: () => _toggleHidePassword())
                         ],
                         _hidePassword),
-                    FieldRow(_urlController, _isEditing, 'URL',
+                    FieldRow(_urlController, _isEditing, 'passwords.URL'.tr(),
                         [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
-                    FieldRow(_commentController, _isEditing, 'Commentaire', []),
+                    FieldRow(_commentController, _isEditing, 'passwords.comment'.tr(), []),
                     // FieldRow(_loginController, _isEditing, 'Expiration', [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
-                    Label('Dernière mise à jour du mot de passe'),
+                    Label('passwords.lastUpdate'.tr()),
                     Text(format.format(this.password.updated)),
                   ],
                 )),
@@ -270,8 +270,8 @@ class _PasswordViewState extends State<PasswordView> {
                 children: _isEditing ? [
                   Row(
                     children: <Widget>[
-                      Expanded(child: BottomButton('Valider', _currentColor, _updatePassword)),
-                      Expanded(child: BottomButton('Annuler', _currentColor, _toggleEdit)),
+                      Expanded(child: BottomButton('global.validate'.tr(), _currentColor, _updatePassword)),
+                      Expanded(child: BottomButton('global.cancel'.tr(), _currentColor, _toggleEdit)),
                     ],
                   )
                 ] : [],
@@ -336,7 +336,7 @@ class FieldRow extends StatelessWidget {
 
   void _copyText(BuildContext context) {
     FlutterClipboard.copy(controller.text);
-    final snackBar = SnackBar(content: Text(label + ' copié(e) !'), duration: Duration(milliseconds: 1250));
+    final snackBar = SnackBar(content: Text('passwords.copied'.tr(args: [label])), duration: Duration(milliseconds: 1250));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
@@ -397,11 +397,11 @@ Future<bool> _showPasswordDeletionDialog(BuildContext context) async {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Attention"),
-          content: Text("Voulez-vous supprimer le mot de passe ?"),
+          title: Text('global.warning'.tr()),
+          content: Text('password.confirmDelete'.tr()),
           actions: [
-            FlatButton(child: Text("Annuler"), onPressed: () => Navigator.pop(context, false)),
-            FlatButton(child: Text("Supprimer"), onPressed: () => Navigator.pop(context, true))
+            FlatButton(child: Text('global.cancel'.tr()), onPressed: () => Navigator.pop(context, false)),
+            FlatButton(child: Text('global.delete'.tr()), onPressed: () => Navigator.pop(context, true))
           ],
         );
       });

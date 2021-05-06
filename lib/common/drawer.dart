@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class MyDrawer extends StatelessWidget {
   @override
@@ -20,21 +21,21 @@ class MyDrawer extends StatelessWidget {
             child: ListView(
               children: <Widget>[
                 ListTile(
-                  title: Text('Mots de passe'),
+                  title: Text('passwords.title'.tr()),
                   leading: Icon(Icons.vpn_key),
                   onTap: () {
                     Navigator.pushReplacementNamed(context, "/passwords");
                   },
                 ),
                 ListTile(
-                  title: Text('Notes sécurisées'),
+                  title: Text('notes.title'.tr()),
                   leading: Icon(Icons.description),
                   onTap: () {
                     Navigator.pushReplacementNamed(context, "/notes");
                   },
                 ),
                 ListTile(
-                  title: Text('Cartes'),
+                  title: Text('cards.title'.tr()),
                   leading: Icon(Icons.credit_card),
                   onTap: () {
                     Navigator.pushReplacementNamed(context, "/cards");
@@ -51,7 +52,7 @@ class MyDrawer extends StatelessWidget {
                     children: <Widget>[
                       Divider(),
                       ListTile(
-                        title: Text('Paramètres'),
+                        title: Text('settings.title'.tr()),
                         leading: Icon(Icons.settings),
                         onTap: () {
                           Navigator.pushReplacementNamed(context, "/settings");

@@ -1,10 +1,50 @@
 {
-  "login":"Identifiant",
-  "msg_named":"Easy localization are written in the {lang} language",
-  "msg_mixed":"{} are written in the {lang} language",
-  "gender":{
-    "male":"Hi man ;) {}",
-    "female":"Hello girl :) {}",
-    "other":"Hello {}"
+  "passwords": {
+    "title": "Mots de passe",
+    "login":"Identifiant",
+    "password":"Mot de passe",
+    "URL":"URL",
+    "comment":"Commentaire",
+    "lastUpdate":"Dernière mise à jour du mot de passe",
+    "edit":"Modifier",
+    "editColor":"Changer la couleur",
+    "delete":"Supprimer",
+    "color":"Couleur",
+    "characters": "caractères",
+    "lowercase": "Minuscules",
+    "uppercase": "Majuscules",
+    "digits": "Chiffres",
+    "symbols": "Symboles",
+    "siteName": "Nom du site",
+    "generate": "Générer",
+    "regenerate": "Re-générer",
+    "addPassword": "Ajouter un mot de passe",
+    "contentCopied": "{} copié(e)",
+    "selectedSymbols": "{}/{} séléctionnés",
+    "colorChoice": "Choix de la couleur",
+    "confirmDelete": "Voulez-vous supprimer le mot de passe ?"
+  },
+  "notes": {
+    "title": "Notes sécurisées"
+  },
+  "cards": {
+    "title": "Cartes"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "french": "Français",
+    "english": "Anglais"
+  },
+  "global": {
+    "validate": "Valider",
+    "cancel": "Annuler",
+    "create": "Créer",
+    "warning": "Attention",
+    "delete": "Supprimer"
+  },
+  "bottomBar": {
+    "search": "Rechercher",
+    "favoriteFilter": "Filtrer sur les favoris",
+    "categoryFilter": "Filtrer sur la catégorie"
   }
 }

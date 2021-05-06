@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:pass_manager/passwords/views/symbols-selection.dart';
 
@@ -29,10 +30,10 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
     "!", "#", "\$", "%", "\"", "&", "'", "(", ")", "*", "-", ".",
     ":", ";", "?", "@", "[", "\\", "]", "^", "_", "{", "}", "/",
   ];
-  List<String> _lowercase = List<String>();
-  List<String> _uppercase = List<String>();
+  List<String> _lowercase = <String>[];
+  List<String> _uppercase = <String>[];
   List<String> _digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-  List<String> _selectedSymbols = List<String>();
+  List<String> _selectedSymbols = <String>[];
 
   _PasswordGenerationState() {
     _lowercase = [
@@ -65,10 +66,10 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
   }
 
   List<String> _buildWeightedAlphabet() {
-    List<String> shuffledLower = new List<String>();
-    List<String> shuffledUpper = new List<String>();
-    List<String> shuffledDigits = new List<String>();
-    List<String> shuffledSymbols = new List<String>();
+    List<String> shuffledLower = <String>[];
+    List<String> shuffledUpper = <String>[];
+    List<String> shuffledDigits = <String>[];
+    List<String> shuffledSymbols = <String>[];
 
     List<String> allCharacters = List<String>.from([]);
 
@@ -164,7 +165,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
                 ),
                 IconButton(
                     icon: Icon(Icons.cached),
-                    tooltip: "Re-générer",
+                    tooltip: "passwords.regenerate".tr(),
                     color: Colors.white,
                     onPressed: () {
                       _generatePassword();
@@ -177,7 +178,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
             Column(children: [
               Text(_passwordLength.toString(),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-              Text("caractères", style: TextStyle(fontSize: 12))
+              Text("passwords.characters".tr(), style: TextStyle(fontSize: 12))
             ]),
             Slider(
                 min: 6,
@@ -198,7 +199,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
         ),
         Divider(),
         CheckboxListTile(
-            title: const Text('Minuscules'),
+            title: Text('passwords.lowercase'.tr()),
             value: _includeLowercase,
             onChanged: (bool value) {
               setState(() {
@@ -210,7 +211,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
             secondary: Icon(Icons.text_fields, color: widget.color),
         ),
         CheckboxListTile(
-          title: const Text('Majuscules'),
+          title: Text('passwords.uppercase'.tr()),
           value: _includeUppercase,
           onChanged: (bool value) {
             setState(() {
@@ -222,7 +223,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
           secondary: Icon(Icons.title, color: widget.color),
         ),
         CheckboxListTile(
-          title: const Text('Chiffres'),
+          title: Text('passwords.digits'.tr()),
           value: _includeDigits,
           onChanged: (bool value) {
             setState(() {
@@ -237,7 +238,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
           title: Row(
             children: [
               Expanded(
-                child: const Text('Symboles'),
+                child: Text('passwords.symbols'.tr()),
               ),
               IconButton(icon: Icon(Icons.settings), color: widget.color, onPressed: () {
                 _handleSymbolsSelection();
@@ -265,7 +266,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
               onPressed: () {
                 Navigator.pop(context, _password);
               },
-              child: const Text('Valider'),
+              child: Text('global.validate'.tr()),
             ),
           ],
         )

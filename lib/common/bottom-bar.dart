@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pass_manager/passwords/utils/favorites_block.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BottomBar extends StatefulWidget {
   BottomBar({Key key}) : super(key: key);
@@ -34,7 +35,7 @@ class _BottomBarState extends State<BottomBar> {
         child: Row(
           children: [
             IconButton(
-              tooltip: "Rechercher",
+              tooltip: "bottomBar.search".tr(),
               icon: Icon(Icons.search,
                   color: Theme.of(context).colorScheme.primary),
               onPressed: () {
@@ -42,13 +43,13 @@ class _BottomBarState extends State<BottomBar> {
               },
             ),
             IconButton(
-              tooltip: "Filtrer sur les favoris",
+              tooltip: "bottomBar.favoriteFilter".tr(),
               icon: Icon(filterOnFavorites ? Icons.favorite : Icons.favorite_outline,
                   color: Theme.of(context).colorScheme.primary),
               onPressed: () => _onFavoritePressed(),
             ),
             IconButton(
-              tooltip: "Filtrer par catégorie",
+              tooltip: "bottomBar.categoryFilter".tr(),
               icon: Icon(Icons.loyalty,
                   color: Theme.of(context).colorScheme.primary),
               onPressed: () => _onTagPressed(),
