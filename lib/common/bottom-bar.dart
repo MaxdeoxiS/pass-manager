@@ -17,6 +17,14 @@ class _BottomBarState extends State<BottomBar> {
     });
   }
 
+  _onTagPressed() {
+    // Trigger event to update view with favorites only or not
+    // bloc.toggleFavorites();
+    // setState(() {
+    //   filterOnTags = !filterOnTags;
+    // });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -38,6 +46,12 @@ class _BottomBarState extends State<BottomBar> {
               icon: Icon(filterOnFavorites ? Icons.favorite : Icons.favorite_outline,
                   color: Theme.of(context).colorScheme.primary),
               onPressed: () => _onFavoritePressed(),
+            ),
+            IconButton(
+              tooltip: "Filtrer par catégorie",
+              icon: Icon(Icons.loyalty,
+                  color: Theme.of(context).colorScheme.primary),
+              onPressed: () => _onTagPressed(),
             ),
           ],
         ),

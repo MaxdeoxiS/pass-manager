@@ -1,16 +1,29 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:pass_manager/passwords/views/password-creation.dart';
 import 'package:pass_manager/passwords/views/password-view.dart';
 import 'package:pass_manager/passwords/views/passwords-list.dart';
+import 'package:flutter/services.dart';
+import 'package:pass_manager/settings/Settings.dart';
 
 import 'cards/cards-list.dart';
 import 'common/page.dart';
 import 'notes/notes-list.dart';
 
-void main() => runApp(MainApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  runApp(
+    EasyLocalization(
+        supportedLocales: [Locale('en', ''), Locale('fr', '')],
+        path: 'assets/translations',
+        fallbackLocale: Locale('en', ''),
+        child: MainApp()
+    ),
+  );
+}
 
 class MainApp extends StatelessWidget {
-
   /// Build page route with provided [page] content
   PageRouteBuilder buildPageRoute(Widget page) {
     return PageRouteBuilder(
@@ -43,20 +56,30 @@ class MainApp extends StatelessWidget {
         PasswordViewArguments args = settings.arguments;
         page = buildPageRoute(PasswordView(password: args.password, onDelete: args.onDelete, onUpdate: args.onUpdate));
         break;
+      case "/settings":
+        page = buildPageRoute(Page(body: Settings(), title: Text("Notes")));
+        break;
     }
     return page;
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
-        title: 'Pass manager',
-        theme: ThemeData(
-          primaryColor: Colors.red,
-          primarySwatch: Colors.red,
-        ),
-        initialRoute: '/',
-        onGenerateRoute: onGenerateRoute,
+      title: 'Pass manager',
+      theme: ThemeData(
+        primaryColor: Colors.red,
+        primarySwatch: Colors.red,
+      ),
+      initialRoute: '/',
+      onGenerateRoute: onGenerateRoute,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
     );
   }
 }

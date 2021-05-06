@@ -54,7 +54,7 @@ class MyDrawer extends StatelessWidget {
                         title: Text('Paramètres'),
                         leading: Icon(Icons.settings),
                         onTap: () {
-                          Navigator.pop(context);
+                          Navigator.pushReplacementNamed(context, "/settings");
                         },
                       ),
                     ],

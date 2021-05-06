@@ -26,16 +26,8 @@ class _PasswordCreationState extends State<PasswordCreation> {
 
   Future<void> insertPassword() async {
     final passwordDao = await dbHelper.getPasswordDao();
-    Password password = new Password(
-        _nameController.text,
-        _loginController.text,
-        _passwordController.text,
-        _urlController.text,
-        _commentController.text,
-        new DateTime.now(),
-        currentColor,
-        isFavorite
-    );
+    Password password = new Password(_nameController.text, _loginController.text, _passwordController.text,
+        _urlController.text, _commentController.text, new DateTime.now(), currentColor, isFavorite);
     await passwordDao.insertPassword(password);
     Navigator.pushReplacementNamed(context, "/passwords");
   }
@@ -48,23 +40,22 @@ class _PasswordCreationState extends State<PasswordCreation> {
   }
 
   void changeColor(Color color) {
-    print(color);
     setState(() => currentColor = color);
   }
 
   void _showColorPicker() {
     showDialog(
-      context: context,
-      child: AlertDialog(
-        title: const Text('Pick a color!'),
-        content: SingleChildScrollView(
-          child: BlockPicker(
-             pickerColor: currentColor,
-             onColorChanged: changeColor,
-           ),
-        )
-      ),
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: const Text('Choix de la couleur'),
+              content: SingleChildScrollView(
+                child: BlockPicker(
+                  pickerColor: currentColor,
+                  onColorChanged: changeColor,
+                ),
+              ));
+        });
   }
 
   void _toggleFavorite() {
@@ -88,7 +79,8 @@ class _PasswordCreationState extends State<PasswordCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ajouter un mot de passe', style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+        title:
+            Text('Ajouter un mot de passe', style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
         backgroundColor: currentColor,
         iconTheme: IconThemeData(color: ColorHelper.getTextContrastedColor(currentColor)),
       ),
@@ -105,9 +97,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
                     TextFormField(
                       controller: _loginController,
                       decoration: InputDecoration(
-                          labelText: 'Identifiant',
-                          contentPadding: EdgeInsets.symmetric(vertical: 0),
-                          isDense: true),
+                          labelText: 'Identifiant', contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
                       autofillHints: [AutofillHints.givenName],
                     ),
                     Row(
@@ -122,9 +112,8 @@ class _PasswordCreationState extends State<PasswordCreation> {
                               contentPadding: EdgeInsets.symmetric(vertical: 0),
                               isDense: true,
                               suffixIcon: IconButton(
-                                  icon: Icon(_passwordVisible
-                                      ? Icons.visibility_off
-                                      : Icons.visibility, color: currentColor),
+                                  icon: Icon(_passwordVisible ? Icons.visibility_off : Icons.visibility,
+                                      color: currentColor),
                                   onPressed: () {
                                     setState(() {
                                       _passwordVisible = !_passwordVisible;
@@ -132,31 +121,24 @@ class _PasswordCreationState extends State<PasswordCreation> {
                                   })),
                           obscureText: !_passwordVisible,
                         )),
-                        FlatButton(
-                            onPressed: () => _handlePasswordGeneration(), child: Text("Générer"))
+                        TextButton(onPressed: () => _handlePasswordGeneration(), child: Text("Générer", style: TextStyle(color: currentColor)))
                       ],
                     ),
                     TextField(
                       controller: _nameController,
                       decoration: InputDecoration(
-                          labelText: 'Nom du site',
-                          contentPadding: EdgeInsets.symmetric(vertical: 0),
-                          isDense: true),
+                          labelText: 'Nom du site', contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
                     ),
                     TextField(
                       controller: _urlController,
                       decoration: InputDecoration(
-                          labelText: 'URL',
-                          contentPadding: EdgeInsets.symmetric(vertical: 0),
-                          isDense: true),
+                          labelText: 'URL', contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
                       autofillHints: <String>[AutofillHints.streetAddressLine1],
                     ),
                     TextField(
                       controller: _commentController,
                       decoration: InputDecoration(
-                          labelText: 'Commentaire',
-                          contentPadding: EdgeInsets.symmetric(vertical: 0),
-                          isDense: true),
+                          labelText: 'Commentaire', contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
                       maxLines: 2,
                     ),
                   ].expand(
@@ -169,8 +151,15 @@ class _PasswordCreationState extends State<PasswordCreation> {
                   ),
                   Row(
                     children: [
-                      FlatButton(onPressed: () => _showColorPicker(), child: Text("Couleur", style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))), color: currentColor),
-                      IconButton(icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_outline, size: 30), onPressed: () => _toggleFavorite(), color: currentColor),
+                      FlatButton(
+                          onPressed: () => _showColorPicker(),
+                          child: Text("Couleur",
+                              style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+                          color: currentColor),
+                      IconButton(
+                          icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_outline, size: 30),
+                          onPressed: () => _toggleFavorite(),
+                          color: currentColor),
                     ],
                   )
                 ],
@@ -180,9 +169,9 @@ class _PasswordCreationState extends State<PasswordCreation> {
                       alignment: Alignment.bottomCenter,
                       child: FlatButton(
                           onPressed: () => insertPassword(),
-                          child: Text("Créer", style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
-                          color: currentColor)
-                      ))
+                          child:
+                              Text("Créer", style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+                          color: currentColor)))
             ],
           ),
         ),
