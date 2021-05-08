@@ -9,14 +9,14 @@ class SymbolsSelection extends StatefulWidget {
   final List<String> selected;
   final Color color;
 
-  SymbolsSelection({this.symbols, this.selected, this.color});
+  SymbolsSelection({required this.symbols, required this.selected, required this.color});
 
   @override
   _SymbolsSelectionState createState() => _SymbolsSelectionState();
 }
 
 class _SymbolsSelectionState extends State<SymbolsSelection> {
-  List<String> _selectedSymbols;
+  late List<String> _selectedSymbols;
 
   _toggleSelect(String symbol) {
     if (_selectedSymbols.contains(symbol)) {

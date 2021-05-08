@@ -102,16 +102,16 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
     return newList;
   }
 
-  List<String> shuffle(List items) {
+  List<String> shuffle(List<String> items) {
     var random = new Random();
 
     // Go through all elements.
     for (var i = items.length - 1; i > 0; i--) {
 
       // Pick a pseudorandom number according to the list length
-      var n = random.nextInt(i + 1);
+      int n = random.nextInt(i + 1);
 
-      var temp = items[i];
+      String temp = items[i];
       items[i] = items[n];
       items[n] = temp;
     }
@@ -120,7 +120,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
   }
 
   void _handleSymbolsSelection() async {
-    List<String> rep = await _showSymbolsSelectionDialog(this.context);
+    List<String>? rep = await _showSymbolsSelectionDialog(this.context);
     if (rep != null) {
       setState(() {
         _selectedSymbols = rep;
@@ -129,7 +129,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
     }
   }
 
-  Future<List<String>> _showSymbolsSelectionDialog(BuildContext context) async {
+  Future<List<String>?> _showSymbolsSelectionDialog(BuildContext context) async {
     return await showDialog<List<String>>(
         context: context,
         builder: (BuildContext context) {
@@ -201,7 +201,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
         CheckboxListTile(
             title: Text('passwords.lowercase'.tr()),
             value: _includeLowercase,
-            onChanged: (bool value) {
+            onChanged: (bool? value) {
               setState(() {
                 _includeLowercase = !_includeLowercase;
               });
@@ -213,7 +213,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
         CheckboxListTile(
           title: Text('passwords.uppercase'.tr()),
           value: _includeUppercase,
-          onChanged: (bool value) {
+          onChanged: (bool? value) {
             setState(() {
               _includeUppercase = !_includeUppercase;
             });
@@ -225,7 +225,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
         CheckboxListTile(
           title: Text('passwords.digits'.tr()),
           value: _includeDigits,
-          onChanged: (bool value) {
+          onChanged: (bool? value) {
             setState(() {
               _includeDigits = !_includeDigits;
             });
@@ -246,7 +246,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
             ],
           ),
           value: _includeSymbols,
-          onChanged: (bool value) {
+          onChanged: (bool? value) {
             setState(() {
               _includeSymbols = !_includeSymbols;
             });

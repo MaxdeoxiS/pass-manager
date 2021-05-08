@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CardList extends StatefulWidget {
-  CardList({Key key}) : super(key: key);
+  CardList({Key? key}) : super(key: key);
   _CardListState createState() => _CardListState();
 }
 

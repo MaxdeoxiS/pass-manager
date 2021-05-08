@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class NoteList extends StatefulWidget {
-  NoteList({Key key}) : super(key: key);
+  NoteList({Key? key}) : super(key: key);
   _NoteListState createState() => _NoteListState();
 }
 

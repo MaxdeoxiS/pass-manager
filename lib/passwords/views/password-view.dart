@@ -17,19 +17,19 @@ const DEFAULT_COLOR = Colors.red;
 enum MenuOption { edit, color, delete }
 
 class PasswordView extends StatefulWidget {
-  final MyCallback onDelete;
-  final MyCallback onUpdate;
+  final DeleteCallback onDelete;
+  final UpdateCallback onUpdate;
   final Password password;
 
-  PasswordView({Key key, this.onDelete, this.onUpdate, this.password}) : super(key: key);
+  PasswordView({Key? key, required this.onDelete, required this.onUpdate, required this.password}) : super(key: key);
   _PasswordViewState createState() => _PasswordViewState();
 }
 
 class _PasswordViewState extends State<PasswordView> {
-  Password password;
+  late Password password;
   bool _isEditing = false;
   bool _hidePassword = true;
-  Color _currentColor;
+  late Color _currentColor;
   final _loginController = TextEditingController();
   final _urlController = TextEditingController();
   final _nameController = TextEditingController();
@@ -95,16 +95,16 @@ class _PasswordViewState extends State<PasswordView> {
   }
 
   void _handlePasswordGeneration() async {
-    String rep = await _showPasswordGenerationDialog(this.context, this.password.color);
+    String? rep = await _showPasswordGenerationDialog(this.context, this.password.color);
     setState(() {
-      _passwordController.text = rep;
+      _passwordController.text = rep!;
     });
   }
 
   void _handlePasswordDeletion() async {
-    bool delete = await _showPasswordDeletionDialog(this.context);
-    if (delete) {
-      widget.onDelete(password);
+    bool? delete = await _showPasswordDeletionDialog(this.context);
+    if (delete!) {
+      widget.onDelete(password.id);
       Navigator.pop(context);
     }
   }
@@ -177,7 +177,7 @@ class _PasswordViewState extends State<PasswordView> {
               children: [
                 Expanded(
                   child: Container(
-                    color: _currentColor ?? DEFAULT_COLOR,
+                    color: _currentColor,
                     height: MediaQuery.of(context).size.height * .2,
                     padding: EdgeInsets.only(top: 24),
                     margin: EdgeInsets.only(bottom: 8),
@@ -309,7 +309,7 @@ class EditableField extends StatelessWidget {
     if (this.hide) {
       return this._hide(controller.text);
     } else {
-      return (controller.text != null && controller.text.length > 0) ? controller.text : '-';
+      return (controller.text.length > 0) ? controller.text : '-';
     }
   }
 
@@ -375,7 +375,7 @@ class BottomButton extends StatelessWidget {
       Expanded(
         child: FlatButton(
           color: this.color,
-          onPressed: this.onClick,
+          onPressed: () => this.onClick(),
           child: Text(this.label, style: TextStyle(color: ColorHelper.getTextContrastedColor(color))),
           height: 50,
         ),
@@ -384,7 +384,7 @@ class BottomButton extends StatelessWidget {
   }
 }
 
-Future<String> _showPasswordGenerationDialog(BuildContext context, Color color) async {
+Future<String?> _showPasswordGenerationDialog(BuildContext context, Color color) async {
   return await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
@@ -392,7 +392,7 @@ Future<String> _showPasswordGenerationDialog(BuildContext context, Color color) 
       });
 }
 
-Future<bool> _showPasswordDeletionDialog(BuildContext context) async {
+Future<bool?> _showPasswordDeletionDialog(BuildContext context) async {
   return await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {

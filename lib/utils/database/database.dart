@@ -1,8 +1,8 @@
 // required package imports
 import 'dart:async';
 import 'package:floor/floor.dart';
-import 'package:pass_manager/utils/color-converter.dart';
-import 'package:pass_manager/utils/datetime-converter.dart';
+import 'package:pass_manager/utils/database/converter/color-converter.dart';
+import 'package:pass_manager/utils/database/converter/datetime-converter.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
 import '../../passwords/dao/password.dao.dart';

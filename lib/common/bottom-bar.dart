@@ -3,7 +3,7 @@ import 'package:pass_manager/passwords/utils/favorites_block.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class BottomBar extends StatefulWidget {
-  BottomBar({Key key}) : super(key: key);
+  BottomBar({Key? key}) : super(key: key);
   _BottomBarState createState() => _BottomBarState();
 }
 

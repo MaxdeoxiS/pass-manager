@@ -22,11 +22,11 @@ class $FloorAppDatabase {
 class _$AppDatabaseBuilder {
   _$AppDatabaseBuilder(this.name);
 
-  final String name;
+  final String? name;
 
   final List<Migration> _migrations = [];
 
-  Callback _callback;
+  Callback? _callback;
 
   /// Adds migrations to the builder.
   _$AppDatabaseBuilder addMigrations(List<Migration> migrations) {
@@ -43,7 +43,7 @@ class _$AppDatabaseBuilder {
   /// Creates the database and initializes it.
   Future<AppDatabase> build() async {
     final path = name != null
-        ? await sqfliteDatabaseFactory.getDatabasePath(name)
+        ? await sqfliteDatabaseFactory.getDatabasePath(name!)
         : ':memory:';
     final database = _$AppDatabase();
     database.database = await database.open(
@@ -56,18 +56,19 @@ class _$AppDatabaseBuilder {
 }
 
 class _$AppDatabase extends AppDatabase {
-  _$AppDatabase([StreamController<String> listener]) {
+  _$AppDatabase([StreamController<String>? listener]) {
     changeListener = listener ?? StreamController<String>.broadcast();
   }
 
-  PasswordDao _passwordDaoInstance;
+  PasswordDao? _passwordDaoInstance;
 
   Future<sqflite.Database> open(String path, List<Migration> migrations,
-      [Callback callback]) async {
+      [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
       version: 1,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
+        await callback?.onConfigure?.call(database);
       },
       onOpen: (database) async {
         await callback?.onOpen?.call(database);
@@ -80,7 +81,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `login` TEXT, `value` TEXT, `url` TEXT, `comment` TEXT, `color` INTEGER, `updated` INTEGER, `isFavorite` INTEGER)');
+            'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `login` TEXT NOT NULL, `value` TEXT NOT NULL, `url` TEXT NOT NULL, `comment` TEXT NOT NULL, `color` INTEGER NOT NULL, `updated` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -96,11 +97,11 @@ class _$AppDatabase extends AppDatabase {
 
 class _$PasswordDao extends PasswordDao {
   _$PasswordDao(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database, changeListener),
+      : _queryAdapter = QueryAdapter(database),
         _passwordInsertionAdapter = InsertionAdapter(
             database,
             'Password',
-            (Password item) => <String, dynamic>{
+            (Password item) => <String, Object?>{
                   'id': item.id,
                   'name': item.name,
                   'login': item.login,
@@ -109,15 +110,13 @@ class _$PasswordDao extends PasswordDao {
                   'comment': item.comment,
                   'color': _colorConverter.encode(item.color),
                   'updated': _dateTimeConverter.encode(item.updated),
-                  'isFavorite':
-                      item.isFavorite == null ? null : (item.isFavorite ? 1 : 0)
-                },
-            changeListener),
+                  'isFavorite': item.isFavorite ? 1 : 0
+                }),
         _passwordUpdateAdapter = UpdateAdapter(
             database,
             'Password',
             ['id'],
-            (Password item) => <String, dynamic>{
+            (Password item) => <String, Object?>{
                   'id': item.id,
                   'name': item.name,
                   'login': item.login,
@@ -126,27 +125,8 @@ class _$PasswordDao extends PasswordDao {
                   'comment': item.comment,
                   'color': _colorConverter.encode(item.color),
                   'updated': _dateTimeConverter.encode(item.updated),
-                  'isFavorite':
-                      item.isFavorite == null ? null : (item.isFavorite ? 1 : 0)
-                },
-            changeListener),
-        _passwordDeletionAdapter = DeletionAdapter(
-            database,
-            'Password',
-            ['id'],
-            (Password item) => <String, dynamic>{
-                  'id': item.id,
-                  'name': item.name,
-                  'login': item.login,
-                  'value': item.value,
-                  'url': item.url,
-                  'comment': item.comment,
-                  'color': _colorConverter.encode(item.color),
-                  'updated': _dateTimeConverter.encode(item.updated),
-                  'isFavorite':
-                      item.isFavorite == null ? null : (item.isFavorite ? 1 : 0)
-                },
-            changeListener);
+                  'isFavorite': item.isFavorite ? 1 : 0
+                });
 
   final sqflite.DatabaseExecutor database;
 
@@ -158,12 +138,10 @@ class _$PasswordDao extends PasswordDao {
 
   final UpdateAdapter<Password> _passwordUpdateAdapter;
 
-  final DeletionAdapter<Password> _passwordDeletionAdapter;
-
   @override
   Future<List<Password>> findAllPasswords() async {
     return _queryAdapter.queryList('SELECT * FROM Password',
-        mapper: (Map<String, dynamic> row) => Password(
+        mapper: (Map<String, Object?> row) => Password(
             row['name'] as String,
             row['login'] as String,
             row['value'] as String,
@@ -171,17 +149,14 @@ class _$PasswordDao extends PasswordDao {
             row['comment'] as String,
             _dateTimeConverter.decode(row['updated'] as int),
             _colorConverter.decode(row['color'] as int),
-            row['isFavorite'] == null ? null : (row['isFavorite'] as int) != 0,
+            (row['isFavorite'] as int) != 0,
             row['id'] as int));
   }
 
   @override
-  Stream<Password> findPasswordById(int id) {
-    return _queryAdapter.queryStream('SELECT * FROM Password WHERE id = ?',
-        arguments: <dynamic>[id],
-        queryableName: 'Password',
-        isView: false,
-        mapper: (Map<String, dynamic> row) => Password(
+  Future<Password?> findPasswordById(int id) async {
+    return _queryAdapter.query('SELECT * FROM Password WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => Password(
             row['name'] as String,
             row['login'] as String,
             row['value'] as String,
@@ -189,23 +164,27 @@ class _$PasswordDao extends PasswordDao {
             row['comment'] as String,
             _dateTimeConverter.decode(row['updated'] as int),
             _colorConverter.decode(row['color'] as int),
-            row['isFavorite'] == null ? null : (row['isFavorite'] as int) != 0,
-            row['id'] as int));
+            (row['isFavorite'] as int) != 0,
+            row['id'] as int),
+        arguments: [id]);
   }
 
   @override
-  Future<void> insertPassword(Password password) async {
-    await _passwordInsertionAdapter.insert(password, OnConflictStrategy.abort);
+  Future<void> deletePassword(int id) async {
+    await _queryAdapter
+        .queryNoReturn('DELETE FROM Password WHERE id = ?1', arguments: [id]);
   }
 
   @override
-  Future<void> updatePassword(Password password) async {
-    await _passwordUpdateAdapter.update(password, OnConflictStrategy.abort);
+  Future<int> insertPassword(Password password) {
+    return _passwordInsertionAdapter.insertAndReturnId(
+        password, OnConflictStrategy.abort);
   }
 
   @override
-  Future<void> deletePassword(Password password) async {
-    await _passwordDeletionAdapter.delete(password);
+  Future<int> updatePassword(Password password) {
+    return _passwordUpdateAdapter.updateAndReturnChangedRows(
+        password, OnConflictStrategy.abort);
   }
 }
 

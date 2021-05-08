@@ -1,48 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:pass_manager/passwords/dao/password.dao.dart';
+import 'package:pass_manager/passwords/utils/PasswordManager.dart';
 import 'package:pass_manager/passwords/utils/favorites_provider.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 
-import '../../utils/database/database.helper.dart';
 import '../entity/password.entity.dart';
 import '../utils/favorites_block.dart';
 
 class PasswordList extends StatefulWidget {
-  PasswordList({Key key}) : super(key: key);
+  PasswordList({Key? key}) : super(key: key);
   _PasswordListState createState() => _PasswordListState();
 }
 
 class _PasswordListState extends State<PasswordList> {
-  final dbHelper = DatabaseHelper.instance;
+  final _passwordManager = PasswordManager.instance;
   List<Password> items = [];
   bool filterOnFavorites = false;
 
-  _updateList() {
-    dbHelper.getPasswordDao().then((passwordDao){
-      passwordDao.findAllPasswords().then((passwords){
-        setState(() {
-          items = passwords;
-        });
-      });
+  _updateList() async {
+    List<Password> passwords = await _passwordManager.getPasswords();
+    setState(() {
+      items = passwords;
     });
   }
 
-  void _deletePassword(Password password) async {
-    PasswordDao passwordDao = await dbHelper.getPasswordDao();
-    await passwordDao.deletePassword(password);
+  void _deletePassword(int id) async {
+    await _passwordManager.deletePassword(id);
     await _updateList();
   }
 
   void _toggleFavorite(Password password) async {
-    PasswordDao passwordDao = await dbHelper.getPasswordDao();
-    Password newPassword = Password(password.name, password.login, password.value, password.url, password.comment, password.updated, password.color, !password.isFavorite, password.id);
-    await passwordDao.updatePassword(newPassword);
+    _passwordManager.toggleFavorite(password);
     await _updateList();
   }
 
   void _onUpdate(Password password) async {
-    PasswordDao passwordDao = await dbHelper.getPasswordDao();
-    await passwordDao.updatePassword(password);
+    await _passwordManager.updatePassword(password);
     await _updateList();
   }
 
@@ -58,7 +50,7 @@ class _PasswordListState extends State<PasswordList> {
       stream: bloc.getFavorites,
       initialData: FavoritesProvider().favorites,
       builder: (context, snapshot) {
-        bool filterFav = snapshot.data;
+        bool filterFav = snapshot.data as bool;
         List<Password> _passwords = items.where((p) => filterFav ? p.isFavorite : true).toList();
         return Scaffold(
           body: _passwords.length > 0 ? ListView.builder(
@@ -72,7 +64,7 @@ class _PasswordListState extends State<PasswordList> {
                   onTap: () {
                     Navigator.pushNamed(context, '/password', arguments: PasswordViewArguments(items[index], this._deletePassword, this._onUpdate));
                   },
-                  tileColor: password.color ?? Colors.white
+                  tileColor: password.color
               );
             },
           ) : Text("Aucun mot de passe enregistré"),
@@ -83,11 +75,12 @@ class _PasswordListState extends State<PasswordList> {
 
 }
 
-typedef void MyCallback(Password password);
+typedef void UpdateCallback(Password password);
+typedef void DeleteCallback(int id);
 class PasswordViewArguments {
   final Password password;
-  final MyCallback onDelete;
-  final MyCallback onUpdate;
+  final DeleteCallback onDelete;
+  final UpdateCallback onUpdate;
 
   PasswordViewArguments(this.password, this.onDelete, this.onUpdate);
 }

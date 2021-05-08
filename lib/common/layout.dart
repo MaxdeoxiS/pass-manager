@@ -3,7 +3,7 @@ import 'package:pass_manager/common/bottom-bar.dart';
 
 class Layout extends StatelessWidget {
   final Widget body;
-  Layout({this.body});
+  Layout({required this.body});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

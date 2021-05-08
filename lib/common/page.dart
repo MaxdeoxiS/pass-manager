@@ -5,7 +5,7 @@ import 'package:pass_manager/common/drawer.dart';
 class Page extends StatelessWidget {
   final Widget body;
   final Text title;
-  Page({this.body, this.title});
+  Page({required this.body, required this.title});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

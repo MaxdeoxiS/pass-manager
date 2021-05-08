@@ -1,3 +1,4 @@
+// @dart=2.12
 import 'package:floor/floor.dart';
 import 'package:pass_manager/passwords/entity/password.entity.dart';
 
@@ -7,14 +8,14 @@ abstract class PasswordDao {
   Future<List<Password>> findAllPasswords();
 
   @Query('SELECT * FROM Password WHERE id = :id')
-  Stream<Password> findPasswordById(int id);
+  Future<Password?> findPasswordById(int id);
 
   @insert
-  Future<void> insertPassword(Password password);
+  Future<int> insertPassword(Password password);
 
   @update
-  Future<void> updatePassword(Password password);
+  Future<int> updatePassword(Password password);
 
-  @delete
-  Future<void> deletePassword(Password password);
+  @Query('DELETE FROM Password WHERE id = :id')
+  Future<void> deletePassword(int id);
 }

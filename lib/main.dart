@@ -1,10 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart' hide Page;
+import 'package:flutter/material.dart' hide Page, Key;
 import 'package:pass_manager/passwords/views/password-creation.dart';
 import 'package:pass_manager/passwords/views/password-view.dart';
 import 'package:pass_manager/passwords/views/passwords-list.dart';
 import 'package:flutter/services.dart';
 import 'package:pass_manager/settings/Settings.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:uuid/uuid.dart';
 
 import 'cards/cards-list.dart';
 import 'common/page.dart';
@@ -13,6 +15,16 @@ import 'notes/notes-list.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
+  final storage = new FlutterSecureStorage();
+
+  String? value = await storage.read(key: 'privateKey');
+
+  if (null == value || value.length != 32) {
+    var uuid = Uuid();
+    await storage.write(key: 'privateKey', value: uuid.v4().substring(0, 32));
+  }
+
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('en', ''), Locale('fr', '')],
@@ -53,10 +65,11 @@ class MainApp extends StatelessWidget {
         page = buildPageRoute(PasswordCreation());
         break;
       case "/password":
-        PasswordViewArguments args = settings.arguments;
+        PasswordViewArguments args = settings.arguments as PasswordViewArguments;
         page = buildPageRoute(PasswordView(password: args.password, onDelete: args.onDelete, onUpdate: args.onUpdate));
         break;
       case "/settings":
+      default:
         page = buildPageRoute(Page(body: Settings(), title: Text('settings.title'.tr())));
         break;
     }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:pass_manager/passwords/utils/PasswordManager.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import '../../utils/database/database.helper.dart';
 import 'package:pass_manager/passwords/views/password-generation.dart';
-import '../entity/password.entity.dart';
 
 class PasswordCreation extends StatefulWidget {
   @override
@@ -23,20 +22,24 @@ class _PasswordCreationState extends State<PasswordCreation> {
   bool _passwordVisible = false;
   bool isFavorite = false;
 
-  final dbHelper = DatabaseHelper.instance;
+  final _passwordManager = PasswordManager.instance;
 
   Future<void> insertPassword() async {
-    final passwordDao = await dbHelper.getPasswordDao();
-    Password password = new Password(_nameController.text, _loginController.text, _passwordController.text,
-        _urlController.text, _commentController.text, new DateTime.now(), currentColor, isFavorite);
-    await passwordDao.insertPassword(password);
+    await _passwordManager.addPassword(
+        login: _loginController.text,
+        value: _passwordController.text,
+        name: _nameController.text,
+        url: _urlController.text,
+        comment: _commentController.text,
+        color: currentColor,
+        isFavorite: isFavorite);
     Navigator.pushReplacementNamed(context, "/passwords");
   }
 
   void _handlePasswordGeneration() async {
-    String rep = await _showPasswordGenerationDialog(this.context, currentColor);
+    String? rep = await _showPasswordGenerationDialog(this.context, currentColor);
     setState(() {
-      _passwordController.text = rep;
+      _passwordController.text = rep!;
     });
   }
 
@@ -80,8 +83,8 @@ class _PasswordCreationState extends State<PasswordCreation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text('passwords.addPassword'.tr(), style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+        title: Text('passwords.addPassword'.tr(),
+            style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
         backgroundColor: currentColor,
         iconTheme: IconThemeData(color: ColorHelper.getTextContrastedColor(currentColor)),
       ),
@@ -98,7 +101,9 @@ class _PasswordCreationState extends State<PasswordCreation> {
                     TextFormField(
                       controller: _loginController,
                       decoration: InputDecoration(
-                          labelText: 'passwords.login'.tr(), contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
+                          labelText: 'passwords.login'.tr(),
+                          contentPadding: EdgeInsets.symmetric(vertical: 0),
+                          isDense: true),
                       autofillHints: [AutofillHints.givenName],
                     ),
                     Row(
@@ -122,13 +127,17 @@ class _PasswordCreationState extends State<PasswordCreation> {
                                   })),
                           obscureText: !_passwordVisible,
                         )),
-                        TextButton(onPressed: () => _handlePasswordGeneration(), child: Text('passwords.generate'.tr(), style: TextStyle(color: currentColor)))
+                        TextButton(
+                            onPressed: () => _handlePasswordGeneration(),
+                            child: Text('passwords.generate'.tr(), style: TextStyle(color: currentColor)))
                       ],
                     ),
                     TextField(
                       controller: _nameController,
                       decoration: InputDecoration(
-                          labelText: 'passwords.siteName'.tr(), contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
+                          labelText: 'passwords.siteName'.tr(),
+                          contentPadding: EdgeInsets.symmetric(vertical: 0),
+                          isDense: true),
                     ),
                     TextField(
                       controller: _urlController,
@@ -139,7 +148,9 @@ class _PasswordCreationState extends State<PasswordCreation> {
                     TextField(
                       controller: _commentController,
                       decoration: InputDecoration(
-                          labelText: 'passwords.comment'.tr(), contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
+                          labelText: 'passwords.comment'.tr(),
+                          contentPadding: EdgeInsets.symmetric(vertical: 0),
+                          isDense: true),
                       maxLines: 2,
                     ),
                   ].expand(
@@ -170,8 +181,8 @@ class _PasswordCreationState extends State<PasswordCreation> {
                       alignment: Alignment.bottomCenter,
                       child: FlatButton(
                           onPressed: () => insertPassword(),
-                          child:
-                              Text('passwords.create'.tr(), style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+                          child: Text('global.create'.tr(),
+                              style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
                           color: currentColor)))
             ],
           ),
@@ -181,7 +192,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
   }
 }
 
-Future<String> _showPasswordGenerationDialog(BuildContext context, Color color) async {
+Future<String?> _showPasswordGenerationDialog(BuildContext context, Color color) async {
   return await showDialog<String>(
       context: context,
       builder: (BuildContext context) {
