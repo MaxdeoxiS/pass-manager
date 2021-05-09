@@ -163,11 +163,14 @@ class _PasswordCreationState extends State<PasswordCreation> {
                   ),
                   Row(
                     children: [
-                      FlatButton(
-                          onPressed: () => _showColorPicker(),
-                          child: Text('passwords.color'.tr(),
-                              style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
-                          color: currentColor),
+                      TextButton(
+                        onPressed: () => _showColorPicker(),
+                        child: Text('passwords.color'.tr(),
+                            style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(currentColor),
+                        ),
+                      ),
                       IconButton(
                           icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_outline, size: 30),
                           onPressed: () => _toggleFavorite(),
@@ -179,11 +182,13 @@ class _PasswordCreationState extends State<PasswordCreation> {
               Expanded(
                   child: new Align(
                       alignment: Alignment.bottomCenter,
-                      child: FlatButton(
+                      child: TextButton(
                           onPressed: () => insertPassword(),
                           child: Text('global.create'.tr(),
                               style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
-                          color: currentColor)))
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(currentColor),
+                          ))))
             ],
           ),
         ),

@@ -27,8 +27,30 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
   bool _includeDigits = true;
   bool _includeSymbols = true;
   final List<String> _symbols = [
-    "!", "#", "\$", "%", "\"", "&", "'", "(", ")", "*", "-", ".",
-    ":", ";", "?", "@", "[", "\\", "]", "^", "_", "{", "}", "/",
+    "!",
+    "#",
+    "\$",
+    "%",
+    "\"",
+    "&",
+    "'",
+    "(",
+    ")",
+    "*",
+    "-",
+    ".",
+    ":",
+    ";",
+    "?",
+    "@",
+    "[",
+    "\\",
+    "]",
+    "^",
+    "_",
+    "{",
+    "}",
+    "/",
   ];
   List<String> _lowercase = <String>[];
   List<String> _uppercase = <String>[];
@@ -37,9 +59,32 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
 
   _PasswordGenerationState() {
     _lowercase = [
-    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
-    "p", "q", "r", "s", "t", "v", "w", "x", "y", "z"
-  ];
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h",
+      "i",
+      "j",
+      "k",
+      "l",
+      "m",
+      "n",
+      "o",
+      "p",
+      "q",
+      "r",
+      "s",
+      "t",
+      "v",
+      "w",
+      "x",
+      "y",
+      "z"
+    ];
     _uppercase = _lowercase.map((letter) => letter.toUpperCase()).toList();
   }
 
@@ -96,7 +141,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
 
   List<String> _mergeSelf(List<String> list, int factor) {
     List<String> newList = new List<String>.from(list);
-    for(var i = 1; i < factor; i++) {
+    for (var i = 1; i < factor; i++) {
       newList..addAll(list);
     }
     return newList;
@@ -107,7 +152,6 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
 
     // Go through all elements.
     for (var i = items.length - 1; i > 0; i--) {
-
       // Pick a pseudorandom number according to the list length
       int n = random.nextInt(i + 1);
 
@@ -158,9 +202,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
                     _password,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: _password.length >= 20 ? 15 : 18,
-                        fontWeight: FontWeight.bold),
+                        color: Colors.white, fontSize: _password.length >= 20 ? 15 : 18, fontWeight: FontWeight.bold),
                   ),
                 ),
                 IconButton(
@@ -176,8 +218,7 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Column(children: [
-              Text(_passwordLength.toString(),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(_passwordLength.toString(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
               Text("passwords.characters".tr(), style: TextStyle(fontSize: 12))
             ]),
             Slider(
@@ -192,23 +233,22 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
                   });
                   this._generatePassword();
                 },
-              activeColor: widget.color,
-              inactiveColor: widget.color.withOpacity(0.5)
-            ),
+                activeColor: widget.color,
+                inactiveColor: widget.color.withOpacity(0.5)),
           ],
         ),
         Divider(),
         CheckboxListTile(
-            title: Text('passwords.lowercase'.tr()),
-            value: _includeLowercase,
-            onChanged: (bool? value) {
-              setState(() {
-                _includeLowercase = !_includeLowercase;
-              });
-              this._generatePassword();
-            },
-            activeColor: widget.color,
-            secondary: Icon(Icons.text_fields, color: widget.color),
+          title: Text('passwords.lowercase'.tr()),
+          value: _includeLowercase,
+          onChanged: (bool? value) {
+            setState(() {
+              _includeLowercase = !_includeLowercase;
+            });
+            this._generatePassword();
+          },
+          activeColor: widget.color,
+          secondary: Icon(Icons.text_fields, color: widget.color),
         ),
         CheckboxListTile(
           title: Text('passwords.uppercase'.tr()),
@@ -240,9 +280,12 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
               Expanded(
                 child: Text('passwords.symbols'.tr()),
               ),
-              IconButton(icon: Icon(Icons.settings), color: widget.color, onPressed: () {
-                _handleSymbolsSelection();
-              }),
+              IconButton(
+                  icon: Icon(Icons.settings),
+                  color: widget.color,
+                  onPressed: () {
+                    _handleSymbolsSelection();
+                  }),
             ],
           ),
           value: _includeSymbols,
@@ -260,9 +303,10 @@ class _PasswordGenerationState extends State<PasswordGeneration> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            RaisedButton(
-              color: widget.color,
-              textColor: Colors.white,
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(widget.color),
+              ),
               onPressed: () {
                 Navigator.pop(context, _password);
               },

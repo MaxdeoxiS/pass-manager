@@ -373,11 +373,12 @@ class BottomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(children: [
       Expanded(
-        child: FlatButton(
-          color: this.color,
+        child: TextButton(
           onPressed: () => this.onClick(),
           child: Text(this.label, style: TextStyle(color: ColorHelper.getTextContrastedColor(color))),
-          height: 50,
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(this.color),
+            )
         ),
       ),
     ]);
@@ -400,8 +401,8 @@ Future<bool?> _showPasswordDeletionDialog(BuildContext context) async {
           title: Text('global.warning'.tr()),
           content: Text('password.confirmDelete'.tr()),
           actions: [
-            FlatButton(child: Text('global.cancel'.tr()), onPressed: () => Navigator.pop(context, false)),
-            FlatButton(child: Text('global.delete'.tr()), onPressed: () => Navigator.pop(context, true))
+            TextButton(child: Text('global.cancel'.tr()), onPressed: () => Navigator.pop(context, false)),
+            TextButton(child: Text('global.delete'.tr()), onPressed: () => Navigator.pop(context, true))
           ],
         );
       });
