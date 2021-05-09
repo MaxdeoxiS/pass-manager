@@ -53,13 +53,13 @@ class MainApp extends StatelessWidget {
     switch (settings.name) {
       case "/":
       case "/passwords":
-        page = buildPageRoute(Page(body: PasswordList(), title: Text('passwords.title'.tr())));
+        page = buildPageRoute(Page(body: PasswordList(), title: Text('passwords.title'.tr()), routeName: "passwords"));
         break;
       case "/notes":
-        page = buildPageRoute(Page(body: NoteList(), title: Text('notes.title'.tr())));
+        page = buildPageRoute(Page(body: NoteList(), title: Text('notes.title'.tr()), routeName: "notes"));
         break;
       case "/cards":
-        page = buildPageRoute(Page(body: CardList(), title: Text('cards.title'.tr())));
+        page = buildPageRoute(Page(body: CardList(), title: Text('cards.title'.tr()), routeName: "cards"));
         break;
       case "/password-create":
         page = buildPageRoute(PasswordCreation());
@@ -70,7 +70,7 @@ class MainApp extends StatelessWidget {
         break;
       case "/settings":
       default:
-        page = buildPageRoute(Page(body: Settings(), title: Text('settings.title'.tr())));
+        page = buildPageRoute(Page(body: Settings(), title: Text('settings.title'.tr()), routeName: "settings"));
         break;
     }
     return page;

@@ -8,14 +8,33 @@ class Settings extends StatelessWidget {
 
     return Scaffold(
       body: Center(
-        child: Container(
-          height: 100,
-          child: Row(
-            children: [
-              TextButton(onPressed: () => context.setLocale(Locale('fr', '')), child: Text('settings.french'.tr())),
-              TextButton(onPressed: () => context.setLocale(Locale('en', '')), child: Text('settings.english'.tr())),
-            ],
-          )
+        child: ListView(
+          children: const <Widget>[
+            Card(
+              child: ListTile(
+                leading: Icon(Icons.flag),
+                title: Text('Langue'),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: Icon(Icons.file_upload),
+                title: Text('Exporter les données'),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: Icon(Icons.file_download),
+                title: Text('Importer des données'),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                leading: Icon(Icons.info),
+                title: Text('A propos'),
+              ),
+            ),
+          ],
         )
       )
     );
