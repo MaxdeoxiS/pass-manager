@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 @entity
 class Password {
   @PrimaryKey(autoGenerate: true)
-  int id;
+  int? id;
 
   String name;
   String login;
@@ -15,5 +15,5 @@ class Password {
   DateTime updated;
   bool isFavorite;
 
-  Password(this.name, this.login, this.value, this.url, this.comment, this.updated, this.color, [this.isFavorite = false, this.id = 0]);
+  Password(this.name, this.login, this.value, this.url, this.comment, this.updated, this.color, [this.isFavorite = false, this.id]);
 }

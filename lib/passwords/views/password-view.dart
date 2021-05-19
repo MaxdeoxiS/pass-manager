@@ -104,7 +104,7 @@ class _PasswordViewState extends State<PasswordView> {
   void _handlePasswordDeletion() async {
     bool? delete = await _showPasswordDeletionDialog(this.context);
     if (delete!) {
-      widget.onDelete(password.id);
+      widget.onDelete(password.id!);
       Navigator.pop(context);
     }
   }

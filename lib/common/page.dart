@@ -6,7 +6,16 @@ class Page extends StatelessWidget {
   final Widget body;
   final Text title;
   final String routeName;
+
   Page({required this.body, required this.title, required this.routeName});
+
+  Widget? buildDrawer() {
+    if (this.routeName.contains('/')) {
+      return null;
+    }
+    return MyDrawer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,6 +23,6 @@ class Page extends StatelessWidget {
           title: title,
         ),
         body: Layout(body: body, page: routeName),
-        drawer: MyDrawer());
+        drawer: buildDrawer());
   }
 }

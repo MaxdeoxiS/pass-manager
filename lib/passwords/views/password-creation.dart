@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:pass_manager/passwords/utils/PasswordManager.dart';
+import 'package:pass_manager/passwords/utils/scraper.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -21,8 +22,16 @@ class _PasswordCreationState extends State<PasswordCreation> {
   Color currentColor = Color(0xff607d8b);
   bool _passwordVisible = false;
   bool isFavorite = false;
+  bool nameIsFilled = false;
 
   final _passwordManager = PasswordManager.instance;
+  @override
+  void initState() {
+    super.initState();
+
+    // Start listening to changes.
+    _nameController.addListener(_onNameChange);
+  }
 
   Future<void> insertPassword() async {
     await _passwordManager.addPassword(
@@ -40,6 +49,20 @@ class _PasswordCreationState extends State<PasswordCreation> {
     String? rep = await _showPasswordGenerationDialog(this.context, currentColor);
     setState(() {
       _passwordController.text = rep!;
+    });
+  }
+
+  void _onNameChange() {
+    setState(() {
+      nameIsFilled = _nameController.text.length > 0;
+    });
+  }
+
+  void _handleUrlGeneration() async {
+    print("generating url...");
+    String url = await Scraper.scrapResults(_nameController.text);
+    setState(() {
+      _urlController.text = url;
     });
   }
 
@@ -139,11 +162,23 @@ class _PasswordCreationState extends State<PasswordCreation> {
                           contentPadding: EdgeInsets.symmetric(vertical: 0),
                           isDense: true),
                     ),
-                    TextField(
-                      controller: _urlController,
-                      decoration: InputDecoration(
-                          labelText: 'URL', contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
-                      autofillHints: <String>[AutofillHints.streetAddressLine1],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                            child: TextField(
+                              controller: _urlController,
+                              decoration: InputDecoration(
+                                  labelText: 'URL'.tr(),
+                                  contentPadding: EdgeInsets.symmetric(vertical: 0),
+                                  isDense: true
+                              ),
+                            )),
+                        TextButton(
+                            onPressed: _nameController.text.length > 0 ? (() => _handleUrlGeneration()) : null,
+                            child: Text('passwords.generate'.tr(), style: TextStyle(color: currentColor)))
+                      ],
                     ),
                     TextField(
                       controller: _commentController,

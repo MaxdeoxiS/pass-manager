@@ -81,7 +81,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `login` TEXT NOT NULL, `value` TEXT NOT NULL, `url` TEXT NOT NULL, `comment` TEXT NOT NULL, `color` INTEGER NOT NULL, `updated` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `login` TEXT NOT NULL, `value` TEXT NOT NULL, `url` TEXT NOT NULL, `comment` TEXT NOT NULL, `color` INTEGER NOT NULL, `updated` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -150,7 +150,7 @@ class _$PasswordDao extends PasswordDao {
             _dateTimeConverter.decode(row['updated'] as int),
             _colorConverter.decode(row['color'] as int),
             (row['isFavorite'] as int) != 0,
-            row['id'] as int));
+            row['id'] as int?));
   }
 
   @override
@@ -165,7 +165,7 @@ class _$PasswordDao extends PasswordDao {
             _dateTimeConverter.decode(row['updated'] as int),
             _colorConverter.decode(row['color'] as int),
             (row['isFavorite'] as int) != 0,
-            row['id'] as int),
+            row['id'] as int?),
         arguments: [id]);
   }
 

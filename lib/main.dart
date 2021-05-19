@@ -4,6 +4,8 @@ import 'package:pass_manager/passwords/views/password-creation.dart';
 import 'package:pass_manager/passwords/views/password-view.dart';
 import 'package:pass_manager/passwords/views/passwords-list.dart';
 import 'package:flutter/services.dart';
+import 'package:pass_manager/settings/About.dart';
+import 'package:pass_manager/settings/Import.dart';
 import 'package:pass_manager/settings/Settings.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:uuid/uuid.dart';
@@ -11,6 +13,8 @@ import 'package:uuid/uuid.dart';
 import 'cards/cards-list.dart';
 import 'common/page.dart';
 import 'notes/notes-list.dart';
+import 'settings/Language.dart';
+import 'settings/Export.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -67,6 +71,18 @@ class MainApp extends StatelessWidget {
       case "/password":
         PasswordViewArguments args = settings.arguments as PasswordViewArguments;
         page = buildPageRoute(PasswordView(password: args.password, onDelete: args.onDelete, onUpdate: args.onUpdate));
+        break;
+      case "/settings/language":
+        page = buildPageRoute(Page(body: Language(), title: Text('settings.language'.tr()), routeName: "/language"));
+        break;
+      case "/settings/import":
+        page = buildPageRoute(Page(body: Import(), title: Text('settings.import'.tr()), routeName: "/language"));
+        break;
+      case "/settings/export":
+        page = buildPageRoute(Page(body: Export(), title: Text('settings.export'.tr()), routeName: "/language"));
+        break;
+      case "/settings/about":
+        page = buildPageRoute(Page(body: About(), title: Text('settings.about'.tr()), routeName: "/about"));
         break;
       case "/settings":
       default:
