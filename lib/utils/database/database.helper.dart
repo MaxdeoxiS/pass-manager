@@ -1,4 +1,6 @@
+import 'package:pass_manager/passwords/dao/category.dao.dart';
 import 'package:pass_manager/passwords/dao/password.dao.dart';
+import 'package:pass_manager/passwords/entity/category.entity.dart';
 
 import 'database.dart';
 
@@ -20,5 +22,10 @@ class DatabaseHelper {
   Future<PasswordDao> getPasswordDao() async {
     AppDatabase db = await instance.database;
     return db.passwordDao;
+  }
+
+  Future<CategoryDao> getCategoryDao() async {
+    AppDatabase db = await instance.database;
+    return db.categoryDao;
   }
 }

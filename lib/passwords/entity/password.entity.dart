@@ -11,9 +11,10 @@ class Password {
   String value;
   String url;
   String comment;
+  String category;
   Color color;
   DateTime updated;
   bool isFavorite;
 
-  Password(this.name, this.login, this.value, this.url, this.comment, this.updated, this.color, [this.isFavorite = false, this.id]);
+  Password(this.name, this.login, this.value, this.url, this.comment, this.updated, this.color, this.category, [this.isFavorite = false, this.id]);
 }

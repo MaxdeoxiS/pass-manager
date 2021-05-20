@@ -62,6 +62,8 @@ class _$AppDatabase extends AppDatabase {
 
   PasswordDao? _passwordDaoInstance;
 
+  CategoryDao? _categoryDaoInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -81,7 +83,9 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `login` TEXT NOT NULL, `value` TEXT NOT NULL, `url` TEXT NOT NULL, `comment` TEXT NOT NULL, `color` INTEGER NOT NULL, `updated` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `login` TEXT NOT NULL, `value` TEXT NOT NULL, `url` TEXT NOT NULL, `comment` TEXT NOT NULL, `category` TEXT NOT NULL, `color` INTEGER NOT NULL, `updated` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL)');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `Category` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `icon` TEXT NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -92,6 +96,11 @@ class _$AppDatabase extends AppDatabase {
   @override
   PasswordDao get passwordDao {
     return _passwordDaoInstance ??= _$PasswordDao(database, changeListener);
+  }
+
+  @override
+  CategoryDao get categoryDao {
+    return _categoryDaoInstance ??= _$CategoryDao(database, changeListener);
   }
 }
 
@@ -108,6 +117,7 @@ class _$PasswordDao extends PasswordDao {
                   'value': item.value,
                   'url': item.url,
                   'comment': item.comment,
+                  'category': item.category,
                   'color': _colorConverter.encode(item.color),
                   'updated': _dateTimeConverter.encode(item.updated),
                   'isFavorite': item.isFavorite ? 1 : 0
@@ -123,6 +133,7 @@ class _$PasswordDao extends PasswordDao {
                   'value': item.value,
                   'url': item.url,
                   'comment': item.comment,
+                  'category': item.category,
                   'color': _colorConverter.encode(item.color),
                   'updated': _dateTimeConverter.encode(item.updated),
                   'isFavorite': item.isFavorite ? 1 : 0
@@ -149,6 +160,7 @@ class _$PasswordDao extends PasswordDao {
             row['comment'] as String,
             _dateTimeConverter.decode(row['updated'] as int),
             _colorConverter.decode(row['color'] as int),
+            row['category'] as String,
             (row['isFavorite'] as int) != 0,
             row['id'] as int?));
   }
@@ -164,6 +176,7 @@ class _$PasswordDao extends PasswordDao {
             row['comment'] as String,
             _dateTimeConverter.decode(row['updated'] as int),
             _colorConverter.decode(row['color'] as int),
+            row['category'] as String,
             (row['isFavorite'] as int) != 0,
             row['id'] as int?),
         arguments: [id]);
@@ -185,6 +198,70 @@ class _$PasswordDao extends PasswordDao {
   Future<int> updatePassword(Password password) {
     return _passwordUpdateAdapter.updateAndReturnChangedRows(
         password, OnConflictStrategy.abort);
+  }
+}
+
+class _$CategoryDao extends CategoryDao {
+  _$CategoryDao(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _categoryInsertionAdapter = InsertionAdapter(
+            database,
+            'Category',
+            (Category item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'icon': item.icon
+                }),
+        _categoryUpdateAdapter = UpdateAdapter(
+            database,
+            'Category',
+            ['id'],
+            (Category item) => <String, Object?>{
+                  'id': item.id,
+                  'name': item.name,
+                  'icon': item.icon
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Category> _categoryInsertionAdapter;
+
+  final UpdateAdapter<Category> _categoryUpdateAdapter;
+
+  @override
+  Future<List<Category>> findAllCategories() async {
+    return _queryAdapter.queryList('SELECT * FROM Category',
+        mapper: (Map<String, Object?> row) => Category(
+            row['name'] as String, row['icon'] as String, row['id'] as int?));
+  }
+
+  @override
+  Future<Category?> findCategoryById(int id) async {
+    return _queryAdapter.query('SELECT * FROM Category WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => Category(
+            row['name'] as String, row['icon'] as String, row['id'] as int?),
+        arguments: [id]);
+  }
+
+  @override
+  Future<void> deleteCategory(int id) async {
+    await _queryAdapter
+        .queryNoReturn('DELETE FROM Category WHERE id = ?1', arguments: [id]);
+  }
+
+  @override
+  Future<void> insertCategory(Category category) async {
+    await _categoryInsertionAdapter.insert(category, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<int> updateCategory(Category category) {
+    return _categoryUpdateAdapter.updateAndReturnChangedRows(
+        category, OnConflictStrategy.abort);
   }
 }
 
