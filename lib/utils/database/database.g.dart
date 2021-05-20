@@ -83,7 +83,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `login` TEXT NOT NULL, `value` TEXT NOT NULL, `url` TEXT NOT NULL, `comment` TEXT NOT NULL, `category` TEXT NOT NULL, `color` INTEGER NOT NULL, `updated` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `login` TEXT NOT NULL, `value` TEXT NOT NULL, `url` TEXT, `comment` TEXT, `category` TEXT, `color` INTEGER NOT NULL, `updated` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL)');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Category` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `icon` TEXT NOT NULL)');
 
@@ -156,11 +156,11 @@ class _$PasswordDao extends PasswordDao {
             row['name'] as String,
             row['login'] as String,
             row['value'] as String,
-            row['url'] as String,
-            row['comment'] as String,
+            row['url'] as String?,
+            row['comment'] as String?,
             _dateTimeConverter.decode(row['updated'] as int),
             _colorConverter.decode(row['color'] as int),
-            row['category'] as String,
+            row['category'] as String?,
             (row['isFavorite'] as int) != 0,
             row['id'] as int?));
   }
@@ -172,11 +172,11 @@ class _$PasswordDao extends PasswordDao {
             row['name'] as String,
             row['login'] as String,
             row['value'] as String,
-            row['url'] as String,
-            row['comment'] as String,
+            row['url'] as String?,
+            row['comment'] as String?,
             _dateTimeConverter.decode(row['updated'] as int),
             _colorConverter.decode(row['color'] as int),
-            row['category'] as String,
+            row['category'] as String?,
             (row['isFavorite'] as int) != 0,
             row['id'] as int?),
         arguments: [id]);

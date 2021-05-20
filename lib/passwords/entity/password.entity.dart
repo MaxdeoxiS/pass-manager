@@ -9,9 +9,9 @@ class Password {
   String name;
   String login;
   String value;
-  String url;
-  String comment;
-  String category;
+  String? url;
+  String? comment;
+  String? category;
   Color color;
   DateTime updated;
   bool isFavorite;

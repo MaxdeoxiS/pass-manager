@@ -40,10 +40,10 @@ class _PasswordViewState extends State<PasswordView> {
   void initState() {
     password = widget.password;
     _loginController.text = password.login;
-    _urlController.text = password.url;
+    _urlController.text = password.url ?? "";
     _nameController.text = password.name;
     _passwordController.text = password.value;
-    _commentController.text = password.comment;
+    _commentController.text = password.comment ?? "";
     _currentColor = password.color;
     super.initState();
   }
@@ -88,7 +88,10 @@ class _PasswordViewState extends State<PasswordView> {
     Navigator.pop(context);
   }
 
-  _openUrl(String url) async {
+  void _openUrl(String? url) async {
+    if (null == url) {
+      return;
+    }
     if (await canLaunch(url)) {
       await launch(url);
     }

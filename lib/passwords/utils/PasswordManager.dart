@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:pass_manager/passwords/entity/password.entity.dart';
 import 'package:pass_manager/utils/database/database.helper.dart';
-import 'package:pass_manager/utils/security/Crytpo.dart';
+import 'package:pass_manager/utils/security/Crypto.dart';
 
 class PasswordManager {
   PasswordManager._privateConstructor();
@@ -17,15 +17,16 @@ class PasswordManager {
       {required String login,
       required String value,
       required String name,
-      required String url,
-      required String comment,
+      String? url,
+      String? comment,
+      String? category,
       required Color color,
       required bool isFavorite}) async {
     final passwordDao = await dbHelper.getPasswordDao();
     final encryptedLogin = await crypto.encrypt(login);
     final encryptedPassword = await crypto.encrypt(value);
     final Password password =
-        new Password(name, encryptedLogin, encryptedPassword, url, comment, DateTime.now(), color, isFavorite);
+        new Password(name, encryptedLogin, encryptedPassword, url, comment, DateTime.now(), color, '', isFavorite);
     passwordDao.insertPassword(password);
   }
 
