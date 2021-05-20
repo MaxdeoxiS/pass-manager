@@ -8,16 +8,25 @@ class Language extends StatelessWidget {
     Navigator.pushNamed(context, "/settings/language"); // push it back in
   }
 
+  Widget button(String locale, BuildContext context) {
+    return Container(
+      child: TextButton(
+          onPressed: () => updateLocale(context, locale), child: Image.asset('assets/images/flag_$locale.png')),
+      decoration:
+          BoxDecoration(border: Border.all(color: Colors.black, width: context.locale.toString() == locale ? 10 : 0)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
             child: Container(
-                height: 100,
-                child: Row(
+                margin: EdgeInsets.symmetric(horizontal: 50),
+                child: Column(
                   children: [
-                    TextButton(onPressed: () => updateLocale(context, 'fr'), child: Text('settings.french'.tr())),
-                    TextButton(onPressed: () => updateLocale(context, 'en'), child: Text('settings.english'.tr())),
+                    button('fr', context),
+                    button('en', context),
                   ],
                 ))));
   }
