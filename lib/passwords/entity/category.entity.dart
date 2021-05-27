@@ -6,7 +6,7 @@ class Category {
   int? id;
 
   String name;
-  String icon;
+  int icon;
 
   Category(this.name, this.icon, [this.id]);
 }

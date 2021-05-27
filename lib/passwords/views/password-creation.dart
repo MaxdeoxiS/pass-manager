@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:pass_manager/passwords/entity/category.entity.dart';
 import 'package:pass_manager/passwords/utils/PasswordManager.dart';
 import 'package:pass_manager/passwords/utils/scraper.dart';
+import 'package:pass_manager/passwords/views/category-selection.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -23,6 +25,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
   bool _passwordVisible = false;
   bool isFavorite = false;
   bool nameIsFilled = false;
+  Category? category;
 
   final _passwordManager = PasswordManager.instance;
   @override
@@ -41,7 +44,8 @@ class _PasswordCreationState extends State<PasswordCreation> {
         url: _urlController.text,
         comment: _commentController.text,
         color: currentColor,
-        isFavorite: isFavorite);
+        isFavorite: isFavorite,
+        category: (category != null) ? category?.name : null);
     Navigator.pushReplacementNamed(context, "/passwords");
   }
 
@@ -59,7 +63,6 @@ class _PasswordCreationState extends State<PasswordCreation> {
   }
 
   void _handleUrlGeneration() async {
-    print("generating url...");
     String url = await Scraper.scrapResults(_nameController.text);
     setState(() {
       _urlController.text = url;
@@ -83,6 +86,17 @@ class _PasswordCreationState extends State<PasswordCreation> {
                 ),
               ));
         });
+  }
+
+  void _showCategoryPicker() async {
+    Category? pickedCategory = await showDialog<Category?>(
+        context: context,
+        builder: (BuildContext context) {
+          return CategorySelection(title: "Sélection de la catégorie", hideActions: true, selectOnTap: true);
+        });
+    setState(() {
+      category = pickedCategory;
+    });
   }
 
   void _toggleFavorite() {
@@ -168,13 +182,10 @@ class _PasswordCreationState extends State<PasswordCreation> {
                       children: [
                         Expanded(
                             child: TextField(
-                              controller: _urlController,
-                              decoration: InputDecoration(
-                                  labelText: 'URL'.tr(),
-                                  contentPadding: EdgeInsets.symmetric(vertical: 0),
-                                  isDense: true
-                              ),
-                            )),
+                          controller: _urlController,
+                          decoration: InputDecoration(
+                              labelText: 'URL'.tr(), contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
+                        )),
                         TextButton(
                             onPressed: _nameController.text.length > 0 ? (() => _handleUrlGeneration()) : null,
                             child: Text('passwords.generate'.tr(), style: TextStyle(color: currentColor)))
@@ -210,6 +221,20 @@ class _PasswordCreationState extends State<PasswordCreation> {
                           icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_outline, size: 30),
                           onPressed: () => _toggleFavorite(),
                           color: currentColor),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      TextButton(
+                        onPressed: () => _showCategoryPicker(),
+                        child: (null == category)
+                            ? Text('Catégorie'.tr(),
+                                style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor)))
+                            : Icon(IconData(category?.icon ?? 0, fontFamily: 'MaterialIcons')),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(currentColor),
+                        ),
+                      ),
                     ],
                   )
                 ],

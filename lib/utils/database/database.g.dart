@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Password` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `login` TEXT NOT NULL, `value` TEXT NOT NULL, `url` TEXT, `comment` TEXT, `category` TEXT, `color` INTEGER NOT NULL, `updated` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Category` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `icon` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `Category` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `icon` INTEGER NOT NULL)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -236,14 +236,14 @@ class _$CategoryDao extends CategoryDao {
   Future<List<Category>> findAllCategories() async {
     return _queryAdapter.queryList('SELECT * FROM Category',
         mapper: (Map<String, Object?> row) => Category(
-            row['name'] as String, row['icon'] as String, row['id'] as int?));
+            row['name'] as String, row['icon'] as int, row['id'] as int?));
   }
 
   @override
   Future<Category?> findCategoryById(int id) async {
     return _queryAdapter.query('SELECT * FROM Category WHERE id = ?1',
         mapper: (Map<String, Object?> row) => Category(
-            row['name'] as String, row['icon'] as String, row['id'] as int?),
+            row['name'] as String, row['icon'] as int, row['id'] as int?),
         arguments: [id]);
   }
 

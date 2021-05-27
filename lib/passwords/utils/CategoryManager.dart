@@ -1,14 +1,14 @@
 import 'package:pass_manager/passwords/entity/category.entity.dart';
 import 'package:pass_manager/utils/database/database.helper.dart';
 
-class PasswordManager {
-  PasswordManager._privateConstructor();
+class CategoryManager {
+  CategoryManager._privateConstructor();
 
-  static final PasswordManager instance = PasswordManager._privateConstructor();
+  static final CategoryManager instance = CategoryManager._privateConstructor();
 
   final dbHelper = DatabaseHelper.instance;
 
-  Future<void> addCategory({required String name, required String icon}) async {
+  Future<void> addCategory({required String name, required int icon}) async {
     final categoryDao = await dbHelper.getCategoryDao();
     final Category category = new Category(name, icon);
     categoryDao.insertCategory(category);
