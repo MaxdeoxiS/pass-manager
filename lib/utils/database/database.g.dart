@@ -67,7 +67,7 @@ class _$AppDatabase extends AppDatabase {
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback? callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 1,
+      version: 2,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -117,7 +117,7 @@ class _$PasswordDao extends PasswordDao {
                   'value': item.value,
                   'url': item.url,
                   'comment': item.comment,
-                  'category': item.category,
+                  'category': _categoryConverter.encode(item.category),
                   'color': _colorConverter.encode(item.color),
                   'updated': _dateTimeConverter.encode(item.updated),
                   'isFavorite': item.isFavorite ? 1 : 0
@@ -133,7 +133,7 @@ class _$PasswordDao extends PasswordDao {
                   'value': item.value,
                   'url': item.url,
                   'comment': item.comment,
-                  'category': item.category,
+                  'category': _categoryConverter.encode(item.category),
                   'color': _colorConverter.encode(item.color),
                   'updated': _dateTimeConverter.encode(item.updated),
                   'isFavorite': item.isFavorite ? 1 : 0
@@ -160,7 +160,7 @@ class _$PasswordDao extends PasswordDao {
             row['comment'] as String?,
             _dateTimeConverter.decode(row['updated'] as int),
             _colorConverter.decode(row['color'] as int),
-            row['category'] as String?,
+            _categoryConverter.decode(row['category'] as String?),
             (row['isFavorite'] as int) != 0,
             row['id'] as int?));
   }
@@ -176,7 +176,7 @@ class _$PasswordDao extends PasswordDao {
             row['comment'] as String?,
             _dateTimeConverter.decode(row['updated'] as int),
             _colorConverter.decode(row['color'] as int),
-            row['category'] as String?,
+            _categoryConverter.decode(row['category'] as String?),
             (row['isFavorite'] as int) != 0,
             row['id'] as int?),
         arguments: [id]);
@@ -248,6 +248,14 @@ class _$CategoryDao extends CategoryDao {
   }
 
   @override
+  Future<Category?> findCategoryByName(String name) async {
+    return _queryAdapter.query('SELECT * FROM Category WHERE name = ?1',
+        mapper: (Map<String, Object?> row) => Category(
+            row['name'] as String, row['icon'] as int, row['id'] as int?),
+        arguments: [name]);
+  }
+
+  @override
   Future<void> deleteCategory(int id) async {
     await _queryAdapter
         .queryNoReturn('DELETE FROM Category WHERE id = ?1', arguments: [id]);
@@ -268,3 +276,4 @@ class _$CategoryDao extends CategoryDao {
 // ignore_for_file: unused_element
 final _dateTimeConverter = DateTimeConverter();
 final _colorConverter = ColorConverter();
+final _categoryConverter = CategoryConverter();

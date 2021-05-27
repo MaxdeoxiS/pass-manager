@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pass_manager/passwords/views/password-generation.dart';
 import 'package:pass_manager/passwords/views/passwords-list.dart';
@@ -9,12 +8,14 @@ import 'package:clipboard/clipboard.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:pass_manager/passwords/entity/category.entity.dart';
 
 import '../entity/password.entity.dart';
+import 'category-selection.dart';
 
 const DEFAULT_COLOR = Colors.red;
 
-enum MenuOption { edit, color, delete }
+enum MenuOption { edit, color, category, delete }
 
 class PasswordView extends StatefulWidget {
   final DeleteCallback onDelete;
@@ -30,6 +31,7 @@ class _PasswordViewState extends State<PasswordView> {
   bool _isEditing = false;
   bool _hidePassword = true;
   late Color _currentColor;
+  late Category? _currentCategory;
   final _loginController = TextEditingController();
   final _urlController = TextEditingController();
   final _nameController = TextEditingController();
@@ -45,6 +47,7 @@ class _PasswordViewState extends State<PasswordView> {
     _passwordController.text = password.value;
     _commentController.text = password.comment ?? "";
     _currentColor = password.color;
+    _currentCategory = password.category;
     super.initState();
   }
 
@@ -134,6 +137,19 @@ class _PasswordViewState extends State<PasswordView> {
     );
   }
 
+  void _showCategoryPicker() async {
+    Category? pickedCategory = await showDialog<Category?>(
+        context: context,
+        builder: (BuildContext context) {
+          return CategorySelection(title: "Sélection de la catégorie", hideActions: true, selectOnTap: true);
+        });
+    setState(() {
+      _currentCategory = pickedCategory;
+    });
+    password.category = _currentCategory;
+    widget.onUpdate(password);
+  }
+
   void _handleMenuClick(MenuOption action) {
     switch (action) {
       case MenuOption.edit:
@@ -144,6 +160,11 @@ class _PasswordViewState extends State<PasswordView> {
       case MenuOption.color:
         {
           _showColorPicker();
+        }
+        break;
+      case MenuOption.category:
+        {
+          _showCategoryPicker();
         }
         break;
       case MenuOption.delete:
@@ -209,6 +230,10 @@ class _PasswordViewState extends State<PasswordView> {
                                   child: Text('passwords.editColor'.tr()),
                                 ),
                                 PopupMenuItem<MenuOption>(
+                                  value: MenuOption.category,
+                                  child: Text('passwords.editCategory'.tr()),
+                                ),
+                                PopupMenuItem<MenuOption>(
                                   value: MenuOption.delete,
                                   child: Text('passwords.delete'.tr()),
                                 ),
@@ -261,9 +286,10 @@ class _PasswordViewState extends State<PasswordView> {
                     FieldRow(_urlController, _isEditing, 'passwords.URL'.tr(),
                         [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
                     FieldRow(_commentController, _isEditing, 'passwords.comment'.tr(), []),
-                    // FieldRow(_loginController, _isEditing, 'Expiration', [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
                     Label('passwords.lastUpdate'.tr()),
                     Text(format.format(this.password.updated)),
+                    Label('Catégorie'.tr()),
+                    Text(this.password.category?.name ?? 'Aucune'),
                   ],
                 )),
             Expanded(

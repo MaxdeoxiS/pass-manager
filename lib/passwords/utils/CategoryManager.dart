@@ -20,6 +20,15 @@ class CategoryManager {
     return categories;
   }
 
+  Future<Category?> getCategory(String? name) async {
+    if (null == name) {
+      return null;
+    }
+    final categoryDao = await dbHelper.getCategoryDao();
+    Category? category = await categoryDao.findCategoryByName(name);
+    return category;
+  }
+
   Future<int> updatePassword(Category category) async {
     final categoryDao = await dbHelper.getCategoryDao();
     return await categoryDao.updateCategory(category);

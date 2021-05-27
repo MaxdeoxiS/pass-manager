@@ -10,6 +10,9 @@ abstract class CategoryDao {
   @Query('SELECT * FROM Category WHERE id = :id')
   Future<Category?> findCategoryById(int id);
 
+  @Query('SELECT * FROM Category WHERE name = :name')
+  Future<Category?> findCategoryByName(String name);
+
   @insert
   Future<void> insertCategory(Category category);
 

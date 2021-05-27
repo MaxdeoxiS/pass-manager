@@ -9,11 +9,12 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 
 import '../../passwords/dao/password.dao.dart';
 import '../../passwords/entity/password.entity.dart';
+import 'converter/category-converter.dart';
 
 part 'database.g.dart'; // the generated code will be there
 
 // For custom types
-@TypeConverters([DateTimeConverter, ColorConverter])
+@TypeConverters([DateTimeConverter, ColorConverter, CategoryConverter])
 // Switch version when model changes
 @Database(version: 1, entities: [Password, Category])
 abstract class AppDatabase extends FloorDatabase {

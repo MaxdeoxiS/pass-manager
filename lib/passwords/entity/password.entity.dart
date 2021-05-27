@@ -1,6 +1,8 @@
 import 'package:floor/floor.dart';
 import 'package:flutter/material.dart';
 
+import 'category.entity.dart';
+
 @entity
 class Password {
   @PrimaryKey(autoGenerate: true)
@@ -11,7 +13,7 @@ class Password {
   String value;
   String? url;
   String? comment;
-  String? category;
+  Category? category;
   Color color;
   DateTime updated;
   bool isFavorite;

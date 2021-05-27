@@ -45,7 +45,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
         comment: _commentController.text,
         color: currentColor,
         isFavorite: isFavorite,
-        category: (category != null) ? category?.name : null);
+        category: (category != null) ? category : null);
     Navigator.pushReplacementNamed(context, "/passwords");
   }
 
@@ -118,12 +118,13 @@ class _PasswordCreationState extends State<PasswordCreation> {
 
   @override
   Widget build(BuildContext context) {
+    Color contrastedColor = ColorHelper.getTextContrastedColor(currentColor);
     return Scaffold(
       appBar: AppBar(
         title: Text('passwords.addPassword'.tr(),
-            style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+            style: TextStyle(color: contrastedColor)),
         backgroundColor: currentColor,
-        iconTheme: IconThemeData(color: ColorHelper.getTextContrastedColor(currentColor)),
+        iconTheme: IconThemeData(color: contrastedColor),
       ),
       body: Form(
         key: _formKey,
@@ -211,8 +212,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
                     children: [
                       TextButton(
                         onPressed: () => _showColorPicker(),
-                        child: Text('passwords.color'.tr(),
-                            style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+                        child: Icon(Icons.circle, color: contrastedColor),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(currentColor),
                         ),
@@ -221,22 +221,19 @@ class _PasswordCreationState extends State<PasswordCreation> {
                           icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_outline, size: 30),
                           onPressed: () => _toggleFavorite(),
                           color: currentColor),
-                    ],
-                  ),
-                  Row(
-                    children: [
+
                       TextButton(
                         onPressed: () => _showCategoryPicker(),
                         child: (null == category)
                             ? Text('Catégorie'.tr(),
-                                style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor)))
-                            : Icon(IconData(category?.icon ?? 0, fontFamily: 'MaterialIcons')),
+                            style: TextStyle(color: contrastedColor))
+                            : Icon(IconData(category?.icon ?? 0, fontFamily: 'MaterialIcons'), color: contrastedColor),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(currentColor),
                         ),
-                      ),
+                      )
                     ],
-                  )
+                  ),
                 ],
               ),
               Expanded(
@@ -245,7 +242,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
                       child: TextButton(
                           onPressed: () => insertPassword(),
                           child: Text('global.create'.tr(),
-                              style: TextStyle(color: ColorHelper.getTextContrastedColor(currentColor))),
+                              style: TextStyle(color: contrastedColor)),
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(currentColor),
                           ))))
