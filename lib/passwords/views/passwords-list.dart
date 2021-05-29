@@ -4,7 +4,7 @@ import 'package:pass_manager/passwords/utils/favorites_provider.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 
 import '../entity/password.entity.dart';
-import '../utils/favorites_block.dart';
+import '../utils/favorites_bloc.dart';
 
 class PasswordList extends StatefulWidget {
   PasswordList({Key? key}) : super(key: key);
@@ -47,36 +47,44 @@ class _PasswordListState extends State<PasswordList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: bloc.getFavorites,
-      initialData: FavoritesProvider().favorites,
-      builder: (context, snapshot) {
-        bool filterFav = snapshot.data as bool;
-        List<Password> _passwords = items.where((p) => filterFav ? p.isFavorite : true).toList();
-        return Scaffold(
-          body: _passwords.length > 0 ? ListView.builder(
-            itemCount: _passwords.length,
-            itemBuilder: (context, index) {
-              Password password = _passwords[index];
-              return ListTile(
-                  title: Text('${password.name}', style: TextStyle(color: ColorHelper.getTextContrastedColor(password.color), fontWeight: FontWeight.w500)),
-                  subtitle: Text('${password.login}', style: TextStyle(color: ColorHelper.getTextContrastedColor(password.color))),
-                  trailing: IconButton(icon: Icon(password.isFavorite ? Icons.favorite : Icons.favorite_outline), onPressed: () => _toggleFavorite(password)),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/password', arguments: PasswordViewArguments(items[index], this._deletePassword, this._onUpdate));
-                  },
-                  tileColor: password.color
-              );
-            },
-          ) : Text("Aucun mot de passe enregistré"),
-        );
-      }
-    );
+        stream: blocFavorite.getFavorites,
+        initialData: FavoritesProvider().favorites,
+        builder: (context, snapshot) {
+          bool filterFav = snapshot.data as bool;
+          List<Password> _passwords = items.where((p) => filterFav ? p.isFavorite : true).toList();
+          return Scaffold(
+            body: _passwords.length > 0
+                ? ListView.builder(
+                    itemCount: _passwords.length,
+                    itemBuilder: (context, index) {
+                      Password password = _passwords[index];
+                      return ListTile(
+                          leading: Icon(IconData(password.category?.icon ?? 0)),
+                          title: Text('${password.name}',
+                              style: TextStyle(
+                                  color: ColorHelper.getTextContrastedColor(password.color),
+                                  fontWeight: FontWeight.w500)),
+                          subtitle: Text('${password.login}',
+                              style: TextStyle(color: ColorHelper.getTextContrastedColor(password.color))),
+                          trailing: IconButton(
+                              icon: Icon(password.isFavorite ? Icons.favorite : Icons.favorite_outline),
+                              onPressed: () => _toggleFavorite(password)),
+                          onTap: () {
+                            Navigator.pushNamed(context, '/password',
+                                arguments: PasswordViewArguments(items[index], this._deletePassword, this._onUpdate));
+                          },
+                          tileColor: password.color);
+                    },
+                  )
+                : Text("Aucun mot de passe enregistré"),
+          );
+        });
   }
-
 }
 
 typedef void UpdateCallback(Password password);
 typedef void DeleteCallback(int id);
+
 class PasswordViewArguments {
   final Password password;
   final DeleteCallback onDelete;

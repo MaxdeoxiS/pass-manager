@@ -19,24 +19,40 @@ class _CategorySelectionState extends State<CategorySelection> {
   final _categoryManager = CategoryManager.instance;
   List<Category> items = [];
 
-  _updateList() async {
+  void _updateList() async {
     List<Category> categories = await _categoryManager.getCategories();
     setState(() {
       items = categories;
     });
   }
 
-  void _showCategoryCreation() {
-    showDialog(
+  void _showCategoryCreation() async {
+    bool? created = await showDialog<bool?>(
         context: context,
         builder: (BuildContext context) {
           return CategoryCreation();
         });
+    // Re-render list if a new item has been created
+    if (null != created && true == created) {
+      _updateList();
+    }
   }
 
   void _onItemTap(Category category) {
+    // If tapping the item is handled by parent
     if (true == this.widget.selectOnTap) {
       Navigator.pop(context, category);
+    } else {
+      print("To do");
+    }
+  }
+
+  void _deleteCategory(Category category) async {
+    bool? delete = await _showCategoryDeletionDialog(this.context);
+    int? id = category.id;
+    if (null != id && null != delete && true == delete) {
+      _categoryManager.deleteCategory(id);
+      _updateList();
     }
   }
 
@@ -71,7 +87,7 @@ class _CategorySelectionState extends State<CategorySelection> {
                 title: Text('${category.name}'),
                 trailing: Icon(IconData(category.icon, fontFamily: "MaterialIcons")),
                 onTap: () => _onItemTap(category),
-                onLongPress: () => print("delete category"),
+                onLongPress: () => _deleteCategory(category),
               );
             },
           )),
@@ -84,4 +100,19 @@ class _CategorySelectionState extends State<CategorySelection> {
       actionsPadding: EdgeInsets.symmetric(vertical: 0),
     );
   }
+}
+
+Future<bool?> _showCategoryDeletionDialog(BuildContext context) async {
+  return await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('global.warning'.tr()),
+          content: Text('password.confirmDelete'.tr()),
+          actions: [
+            TextButton(child: Text('global.cancel'.tr()), onPressed: () => Navigator.pop(context, false)),
+            TextButton(child: Text('global.delete'.tr()), onPressed: () => Navigator.pop(context, true))
+          ],
+        );
+      });
 }

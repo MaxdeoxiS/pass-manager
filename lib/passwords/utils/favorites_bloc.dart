@@ -18,4 +18,4 @@ class FavoritesBloc {
   }
 }
 
-final bloc = FavoritesBloc();
+final blocFavorite = FavoritesBloc();

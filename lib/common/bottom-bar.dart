@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pass_manager/passwords/utils/favorites_block.dart';
+import 'package:pass_manager/passwords/utils/favorites_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class BottomBar extends StatefulWidget {
@@ -12,15 +12,14 @@ class _BottomBarState extends State<BottomBar> {
 
   _onFavoritePressed() {
     // Trigger event to update view with favorites only or not
-    bloc.toggleFavorites();
+    blocFavorite.toggleFavorites();
     setState(() {
       filterOnFavorites = !filterOnFavorites;
     });
   }
 
-  _onTagPressed() {
+  _onCategoryPressed() {
     // Trigger event to update view with favorites only or not
-    // bloc.toggleFavorites();
     // setState(() {
     //   filterOnTags = !filterOnTags;
     // });
@@ -52,7 +51,7 @@ class _BottomBarState extends State<BottomBar> {
               tooltip: "bottomBar.categoryFilter".tr(),
               icon: Icon(Icons.loyalty,
                   color: Theme.of(context).colorScheme.primary),
-              onPressed: () => _onTagPressed(),
+              onPressed: () => _onCategoryPressed(),
             ),
           ],
         ),

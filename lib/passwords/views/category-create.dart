@@ -55,7 +55,7 @@ class _CategoryCreationState extends State<CategoryCreation> {
     final int icon = this.selected;
     final String name = _nameController.text;
     await _categoryManager.addCategory(name: name, icon: icon);
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 
   @override
