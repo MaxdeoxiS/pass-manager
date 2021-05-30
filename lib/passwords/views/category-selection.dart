@@ -9,7 +9,8 @@ class CategorySelection extends StatefulWidget {
   final bool? hideActions;
   final String title;
   final bool? selectOnTap;
-  CategorySelection({this.hideActions, required this.title, this.selectOnTap});
+  final List<String>? selectedItems;
+  CategorySelection({this.hideActions, required this.title, this.selectOnTap, this.selectedItems});
 
   @override
   _CategorySelectionState createState() => _CategorySelectionState();
@@ -18,11 +19,18 @@ class CategorySelection extends StatefulWidget {
 class _CategorySelectionState extends State<CategorySelection> {
   final _categoryManager = CategoryManager.instance;
   List<Category> items = [];
+  List<String> activeItems = [];
 
   void _updateList() async {
     List<Category> categories = await _categoryManager.getCategories();
     setState(() {
       items = categories;
+    });
+  }
+
+  void _setActiveItems(List<String> actives) async {
+    setState(() {
+      activeItems = actives;
     });
   }
 
@@ -43,7 +51,13 @@ class _CategorySelectionState extends State<CategorySelection> {
     if (true == this.widget.selectOnTap) {
       Navigator.pop(context, category);
     } else {
-      print("To do");
+      setState(() {
+        if (activeItems.contains(category.name)) {
+          activeItems.remove(category.name);
+        } else {
+          activeItems.add(category.name);
+        }
+      });
     }
   }
 
@@ -59,6 +73,9 @@ class _CategorySelectionState extends State<CategorySelection> {
   @override
   void initState() {
     _updateList();
+    if (null != widget.selectedItems) {
+      _setActiveItems(widget.selectedItems!);
+    }
     super.initState();
   }
 
@@ -84,6 +101,7 @@ class _CategorySelectionState extends State<CategorySelection> {
               }
               Category category = items[index];
               return ListTile(
+                leading: this.widget.selectOnTap != null ? null : Icon(this.activeItems.contains(category.name) ? Icons.check_box_rounded : Icons.check_box_outline_blank_sharp),
                 title: Text('${category.name}'),
                 trailing: Icon(IconData(category.icon, fontFamily: "MaterialIcons")),
                 onTap: () => _onItemTap(category),
@@ -94,8 +112,7 @@ class _CategorySelectionState extends State<CategorySelection> {
       actions: (this.widget.hideActions == true)
           ? []
           : [
-              TextButton(onPressed: () => Navigator.pop(context), child: Text('global.cancel'.tr())),
-              TextButton(onPressed: () => Navigator.pop(context), child: Text('global.validate'.tr()))
+              TextButton(onPressed: () => Navigator.pop(context, activeItems), child: Text('global.validate'.tr()))
             ],
       actionsPadding: EdgeInsets.symmetric(vertical: 0),
     );

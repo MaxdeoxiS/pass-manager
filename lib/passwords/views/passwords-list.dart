@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:pass_manager/passwords/utils/Filter.dart';
 import 'package:pass_manager/passwords/utils/PasswordManager.dart';
-import 'package:pass_manager/passwords/utils/favorites_provider.dart';
+import 'package:pass_manager/passwords/utils/filter_provider.dart';
 import 'package:pass_manager/utils/color.helper.dart';
 
 import '../entity/password.entity.dart';
-import '../utils/favorites_bloc.dart';
+import '../utils/filter_bloc.dart';
 
 class PasswordList extends StatefulWidget {
   PasswordList({Key? key}) : super(key: key);
@@ -47,11 +48,14 @@ class _PasswordListState extends State<PasswordList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: blocFavorite.getFavorites,
-        initialData: FavoritesProvider().favorites,
+        stream: blocFilter.getFilter,
+        initialData: FilterProvider().filter,
         builder: (context, snapshot) {
-          bool filterFav = snapshot.data as bool;
-          List<Password> _passwords = items.where((p) => filterFav ? p.isFavorite : true).toList();
+          Filter filter = snapshot.data as Filter;
+          List<Password> _passwords = items.where((p) => filter.favorites ? p.isFavorite : true).toList();
+          if (filter.categories.length > 0) {
+            _passwords = _passwords.where((pass) => filter.categories.contains(pass.category?.name)).toList();
+          }
           return Scaffold(
             body: _passwords.length > 0
                 ? ListView.builder(

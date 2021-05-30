@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pass_manager/passwords/utils/favorites_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:pass_manager/passwords/entity/category.entity.dart';
+import 'package:pass_manager/passwords/utils/filter_bloc.dart';
+import 'package:pass_manager/passwords/views/category-selection.dart';
 
 class BottomBar extends StatefulWidget {
   BottomBar({Key? key}) : super(key: key);
@@ -9,20 +11,30 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<BottomBar> {
   bool filterOnFavorites = false;
+  List<String> activeCategories = [];
 
   _onFavoritePressed() {
     // Trigger event to update view with favorites only or not
-    blocFavorite.toggleFavorites();
+    blocFilter.toggleFavorites();
     setState(() {
       filterOnFavorites = !filterOnFavorites;
     });
   }
 
-  _onCategoryPressed() {
-    // Trigger event to update view with favorites only or not
-    // setState(() {
-    //   filterOnTags = !filterOnTags;
-    // });
+  _onCategoryPressed() async {
+    List<String>? categories = await showDialog<List<String>>(
+        context: context,
+        builder: (BuildContext context) {
+          return CategorySelection(title: "Filtrer par catégories", selectedItems: activeCategories);
+        });
+    if (null != categories && categories.length > 0) {
+      blocFilter.setCategories(categories);
+      setState(() {
+        activeCategories = categories;
+      });
+    } else {
+      blocFilter.setCategories([]);
+    }
   }
 
   @override
@@ -35,8 +47,7 @@ class _BottomBarState extends State<BottomBar> {
           children: [
             IconButton(
               tooltip: "bottomBar.search".tr(),
-              icon: Icon(Icons.search,
-                  color: Theme.of(context).colorScheme.primary),
+              icon: Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
               onPressed: () {
                 print('Search button pressed');
               },
@@ -49,8 +60,7 @@ class _BottomBarState extends State<BottomBar> {
             ),
             IconButton(
               tooltip: "bottomBar.categoryFilter".tr(),
-              icon: Icon(Icons.loyalty,
-                  color: Theme.of(context).colorScheme.primary),
+              icon: Icon(Icons.loyalty, color: Theme.of(context).colorScheme.primary),
               onPressed: () => _onCategoryPressed(),
             ),
           ],
