@@ -124,18 +124,17 @@ class _PasswordViewState extends State<PasswordView> {
 
   void _showColorPicker() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            title: Text('passwords.colorChoice'.tr()),
-            content: SingleChildScrollView(
-              child: BlockPicker(
-                pickerColor: _currentColor,
-                onColorChanged: changeColor,
-              ),
-            ));
-      }
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text('passwords.colorChoice'.tr()),
+              content: SingleChildScrollView(
+                child: BlockPicker(
+                  pickerColor: _currentColor,
+                  onColorChanged: changeColor,
+                ),
+              ));
+        });
   }
 
   void _showCategoryPicker() async {
@@ -195,6 +194,7 @@ class _PasswordViewState extends State<PasswordView> {
 
   @override
   Widget build(BuildContext context) {
+    Color contrastedColor = ColorHelper.getTextContrastedColor(_currentColor);
     return Scaffold(
         body: Column(
           children: [
@@ -215,9 +215,9 @@ class _PasswordViewState extends State<PasswordView> {
                             IconButton(
                                 icon: Icon(Icons.arrow_back),
                                 onPressed: () => _onBackPressed(),
-                                color: ColorHelper.getTextContrastedColor(_currentColor)),
+                                color: contrastedColor),
                             PopupMenuButton<MenuOption>(
-                              icon: Icon(Icons.more_vert, color: ColorHelper.getTextContrastedColor(_currentColor)),
+                              icon: Icon(Icons.more_vert, color: contrastedColor),
                               onSelected: (MenuOption result) {
                                 _handleMenuClick(result);
                               },
@@ -245,17 +245,15 @@ class _PasswordViewState extends State<PasswordView> {
                         _isEditing
                             ? Container(width: 100, child: TextField(controller: _nameController))
                             : Text(_nameController.text,
-                                style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w500,
-                                    color: ColorHelper.getTextContrastedColor(_currentColor))),
+                                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500, color: contrastedColor)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            IconButton(
-                              icon: Icon(password.isFavorite ? Icons.favorite : Icons.favorite_outline,
-                                  color: ColorHelper.getTextContrastedColor(password.color)),
-                              onPressed: () => _toggleFavorite(),
+                            OutlinedButton(
+                              onPressed: () {
+                                _toggleEdit();
+                              },
+                              child: Text('Modifier', style: TextStyle(color: contrastedColor)),
                             )
                           ],
                         )
@@ -284,27 +282,20 @@ class _PasswordViewState extends State<PasswordView> {
                               onPressed: () => _toggleHidePassword())
                         ],
                         _hidePassword),
+                    StaticFieldRow('Catégorie'.tr(), _currentCategory?.name, _isEditing, []),
+                    StaticFieldRow('Favori'.tr(), password.isFavorite ? 'Oui' : 'Non', _isEditing, []),
                     FieldRow(_urlController, _isEditing, 'passwords.URL'.tr(),
                         [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
                     FieldRow(_commentController, _isEditing, 'passwords.comment'.tr(), []),
-                    Label('passwords.lastUpdate'.tr()),
-                    Text(format.format(this.password.updated)),
-                    Label('Catégorie'.tr()),
-                    Text(this.password.category?.name ?? 'Aucune'),
                   ],
                 )),
             Expanded(
               flex: 1,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: _isEditing ? [
-                  Row(
-                    children: <Widget>[
-                      Expanded(child: BottomButton('global.validate'.tr(), _currentColor, _updatePassword)),
-                      Expanded(child: BottomButton('global.cancel'.tr(), _currentColor, _toggleEdit)),
-                    ],
-                  )
-                ] : [],
+                children: [
+                  Label('passwords.lastUpdate'.tr() + ' le ' + format.format(this.password.updated)),
+                ],
               ),
             ),
           ],
@@ -335,7 +326,7 @@ class EditableField extends StatelessWidget {
     return text.replaceAll(new RegExp(r'.'), '*');
   }
 
-  String _displayValue(String text) {
+  String _displayValue() {
     if (this.hide) {
       return this._hide(controller.text);
     } else {
@@ -345,13 +336,13 @@ class EditableField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (this.editing
+    return this.editing
         ? Expanded(
             child: TextField(
                 controller: controller,
                 decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
                 obscureText: this.hide))
-        : Text(_displayValue(controller.text), style: TextStyle(fontSize: 16)));
+        : Text(_displayValue(), style: TextStyle(fontSize: 16));
   }
 }
 
@@ -366,52 +357,60 @@ class FieldRow extends StatelessWidget {
 
   void _copyText(BuildContext context) {
     FlutterClipboard.copy(controller.text);
-    final snackBar = SnackBar(content: Text('passwords.copied'.tr(args: [label])), duration: Duration(milliseconds: 1250));
+    final snackBar =
+        SnackBar(content: Text('passwords.copied'.tr(args: [label])), duration: Duration(milliseconds: 1250));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Label(label),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            EditableField(controller, editing, hide),
-            Row(children: [
-              ...actions.map((widget) => widget).toList(),
-              IconButton(icon: Icon(Icons.copy), onPressed: () => _copyText(context))
-            ])
+            Label(label),
+            Container(width: 200, height: 40, child: EditableField(controller, editing, hide)),
           ],
         ),
+        Row(children: [
+          ...actions.map((widget) => widget).toList(),
+          IconButton(icon: Icon(Icons.copy), onPressed: () => _copyText(context))
+        ])
       ],
     );
   }
 }
 
-class BottomButton extends StatelessWidget {
+class StaticFieldRow extends StatelessWidget {
   final String label;
-  final Color color;
-  final Function onClick;
+  final String? value;
+  final List<Widget> actions;
+  final bool editing;
 
-  BottomButton(this.label, this.color, this.onClick);
+  StaticFieldRow(this.label, this.value, this.editing, this.actions);
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      Expanded(
-        child: TextButton(
-          onPressed: () => this.onClick(),
-          child: Text(this.label, style: TextStyle(color: ColorHelper.getTextContrastedColor(color))),
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(this.color),
-            )
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Label(label),
+            Text(value ?? '', style: TextStyle(fontSize: 16)),
+          ],
         ),
-      ),
-    ]);
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [Row(children: actions.map((widget) => widget).toList())],
+        ),
+      ],
+    );
   }
 }
 
