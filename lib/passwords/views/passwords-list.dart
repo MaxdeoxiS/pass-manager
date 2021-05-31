@@ -67,7 +67,7 @@ class _PasswordListState extends State<PasswordList> {
                       Password password = _passwords[index];
                       print(password.category?.icon);
                       return ListTile(
-                          leading: Icon(IconData(password.category?.icon ?? 0)),
+                          leading: Icon(IconData(password.category?.icon ?? 0, fontFamily: "MaterialIcons"), size: 35),
                           title: Text('${password.name}',
                               style: TextStyle(
                                   color: ColorHelper.getTextContrastedColor(password.color),
