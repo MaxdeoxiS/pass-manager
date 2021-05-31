@@ -12,22 +12,32 @@ class FilterBloc {
   // Favorites
   void toggleFavorites() {
     provider.toggleFavorites();
-    filterController.sink.add(provider.filter);
+    update();
   }
 
   // Categories
   void addCategory(String s) {
     provider.addCategory(s);
-    filterController.sink.add(provider.filter);
+    update();
   }
 
   void removeCategory(String s) {
     provider.removeCategory(s);
-    filterController.sink.add(provider.filter);
+    update();
   }
 
   void setCategories(List<String> c) {
     provider.setCategories(c);
+    update();
+  }
+
+  // Search
+  void setSearch(String? query) {
+    provider.setSearch(query);
+    update();
+  }
+
+  void update() {
     filterController.sink.add(provider.filter);
   }
 

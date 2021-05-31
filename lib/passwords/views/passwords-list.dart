@@ -56,12 +56,16 @@ class _PasswordListState extends State<PasswordList> {
           if (filter.categories.length > 0) {
             _passwords = _passwords.where((pass) => filter.categories.contains(pass.category?.name)).toList();
           }
+          if (null != filter.search) {
+            _passwords = _passwords.where((pass) => pass.name.contains(filter.search!) || pass.login.contains(filter.search!)).toList();
+          }
           return Scaffold(
             body: _passwords.length > 0
                 ? ListView.builder(
                     itemCount: _passwords.length,
                     itemBuilder: (context, index) {
                       Password password = _passwords[index];
+                      print(password.category?.icon);
                       return ListTile(
                           leading: Icon(IconData(password.category?.icon ?? 0)),
                           title: Text('${password.name}',

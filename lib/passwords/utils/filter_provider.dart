@@ -14,4 +14,7 @@ class FilterProvider {
   void addCategory(String s) => filter.categories.add(s);
   void removeCategory(String s) => filter.categories.removeWhere((element) => element == s);
   void setCategories(List<String> c) => filter.categories = c;
+
+  // Search
+  void setSearch(String? query) => filter.search = query;
 }

@@ -28,6 +28,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
   Category? category;
 
   final _passwordManager = PasswordManager.instance;
+
   @override
   void initState() {
     super.initState();

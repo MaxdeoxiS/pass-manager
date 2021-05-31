@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:pass_manager/passwords/entity/category.entity.dart';
@@ -12,6 +13,8 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   bool filterOnFavorites = false;
   List<String> activeCategories = [];
+  final _searchController = TextEditingController();
+  bool searchNotEmpy = false;
 
   _onFavoritePressed() {
     // Trigger event to update view with favorites only or not
@@ -33,12 +36,57 @@ class _BottomBarState extends State<BottomBar> {
         activeCategories = categories;
       });
     } else {
+      setState(() {
+        activeCategories = [];
+      });
       blocFilter.setCategories([]);
     }
   }
 
+  _onSearchPressed() async {
+    String? result = await showDialog<String?>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+              content: new Container(
+                  height: 50,
+                  width: 200,
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: TextFormField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: "Search something",
+                    ),
+                  )));
+        });
+      setState(() {
+        searchNotEmpy = _searchController.text.length > 0;
+      });
+  }
+
+  _onSearchUpdated() {
+    blocFilter.setSearch(_searchController.text);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Start listening to changes.
+    _searchController.addListener(_onSearchUpdated);
+  }
+
+  @override
+  void dispose() {
+    // other dispose methods
+    _searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(searchNotEmpy);
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
       child: IconTheme(
@@ -47,9 +95,9 @@ class _BottomBarState extends State<BottomBar> {
           children: [
             IconButton(
               tooltip: "bottomBar.search".tr(),
-              icon: Icon(Icons.search, color: Theme.of(context).colorScheme.primary),
+              icon: Badge(showBadge: searchNotEmpy, animationType: BadgeAnimationType.scale, child: Icon(Icons.search, color: Theme.of(context).colorScheme.primary)),
               onPressed: () {
-                print('Search button pressed');
+                _onSearchPressed();
               },
             ),
             IconButton(
@@ -60,9 +108,15 @@ class _BottomBarState extends State<BottomBar> {
             ),
             IconButton(
               tooltip: "bottomBar.categoryFilter".tr(),
-              icon: Icon(Icons.loyalty, color: Theme.of(context).colorScheme.primary),
+              icon: Badge(showBadge: activeCategories.length > 0, animationType: BadgeAnimationType.scale, child: Icon(Icons.loyalty, color: Theme.of(context).colorScheme.primary)),
               onPressed: () => _onCategoryPressed(),
             ),
+            (filterOnFavorites || _searchController.text.length > 0 || activeCategories.length > 0) ?
+            IconButton(
+              tooltip: "bottomBar.categoryFilter".tr(),
+              icon: Icon(Icons.clear_outlined, color: Theme.of(context).colorScheme.primary),
+              onPressed: () => _onCategoryPressed(),
+            ) : Icon(Icons.file_download),
           ],
         ),
       ),
