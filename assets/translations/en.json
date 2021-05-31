@@ -1,8 +1,8 @@
 {
   "passwords": {
     "title": "Passwords",
-    "login":"Login",
-    "password":"Password",
+    "login":"Login*",
+    "password":"Password*",
     "URL":"URL",
     "comment":"Comment",
     "lastUpdate":"Password last modified date",
@@ -15,7 +15,7 @@
     "uppercase": "Capital letters",
     "digits": "Digits",
     "symbols": "Symbols",
-    "siteName": "Site name",
+    "siteName": "Site name*",
     "generate": "Generate",
     "regenerate": "Re-generate",
     "addPassword": "Add a new password",

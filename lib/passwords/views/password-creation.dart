@@ -37,16 +37,18 @@ class _PasswordCreationState extends State<PasswordCreation> {
   }
 
   Future<void> insertPassword() async {
-    await _passwordManager.addPassword(
-        login: _loginController.text,
-        value: _passwordController.text,
-        name: _nameController.text,
-        url: _urlController.text,
-        comment: _commentController.text,
-        color: currentColor,
-        isFavorite: isFavorite,
-        category: (category != null) ? category : null);
-    Navigator.pushReplacementNamed(context, "/passwords");
+    if (_formKey.currentState!.validate()) {
+      await _passwordManager.addPassword(
+          login: _loginController.text,
+          value: _passwordController.text,
+          name: _nameController.text,
+          url: _urlController.text,
+          comment: _commentController.text,
+          color: currentColor,
+          isFavorite: isFavorite,
+          category: (category != null) ? category : null);
+      Navigator.pushReplacementNamed(context, "/passwords");
+    }
   }
 
   void _handlePasswordGeneration() async {
@@ -120,9 +122,9 @@ class _PasswordCreationState extends State<PasswordCreation> {
   Widget build(BuildContext context) {
     Color contrastedColor = ColorHelper.getTextContrastedColor(currentColor);
     return Scaffold(
+        resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('passwords.addPassword'.tr(),
-            style: TextStyle(color: contrastedColor)),
+        title: Text('passwords.addPassword'.tr(), style: TextStyle(color: contrastedColor)),
         backgroundColor: currentColor,
         iconTheme: IconThemeData(color: contrastedColor),
       ),
@@ -138,6 +140,12 @@ class _PasswordCreationState extends State<PasswordCreation> {
                   ...[
                     TextFormField(
                       controller: _loginController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Ce champ ne peut pas être vide';
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                           labelText: 'passwords.login'.tr(),
                           contentPadding: EdgeInsets.symmetric(vertical: 0),
@@ -149,8 +157,14 @@ class _PasswordCreationState extends State<PasswordCreation> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                            child: TextField(
+                            child: TextFormField(
                           controller: _passwordController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Ce champ ne peut pas être vide';
+                            }
+                            return null;
+                          },
                           decoration: InputDecoration(
                               labelText: 'passwords.password'.tr(),
                               contentPadding: EdgeInsets.symmetric(vertical: 0),
@@ -170,8 +184,14 @@ class _PasswordCreationState extends State<PasswordCreation> {
                             child: Text('passwords.generate'.tr(), style: TextStyle(color: currentColor)))
                       ],
                     ),
-                    TextField(
+                    TextFormField(
                       controller: _nameController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Ce champ ne peut pas être vide';
+                        }
+                        return null;
+                      },
                       decoration: InputDecoration(
                           labelText: 'passwords.siteName'.tr(),
                           contentPadding: EdgeInsets.symmetric(vertical: 0),
@@ -221,12 +241,10 @@ class _PasswordCreationState extends State<PasswordCreation> {
                           icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_outline, size: 30),
                           onPressed: () => _toggleFavorite(),
                           color: currentColor),
-
                       TextButton(
                         onPressed: () => _showCategoryPicker(),
                         child: (null == category)
-                            ? Text('Catégorie'.tr(),
-                            style: TextStyle(color: contrastedColor))
+                            ? Text('Catégorie'.tr(), style: TextStyle(color: contrastedColor))
                             : Icon(IconData(category?.icon ?? 0, fontFamily: 'MaterialIcons'), color: contrastedColor),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(currentColor),
@@ -241,8 +259,7 @@ class _PasswordCreationState extends State<PasswordCreation> {
                       alignment: Alignment.bottomCenter,
                       child: TextButton(
                           onPressed: () => insertPassword(),
-                          child: Text('global.create'.tr(),
-                              style: TextStyle(color: contrastedColor)),
+                          child: Text('global.create'.tr(), style: TextStyle(color: contrastedColor)),
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(currentColor),
                           ))))

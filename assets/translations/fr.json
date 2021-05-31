@@ -1,8 +1,8 @@
 {
   "passwords": {
     "title": "Mots de passe",
-    "login":"Identifiant",
-    "password":"Mot de passe",
+    "login":"Identifiant*",
+    "password":"Mot de passe*",
     "URL":"URL",
     "comment":"Commentaire",
     "lastUpdate":"Dernière mise à jour du mot de passe",
@@ -15,7 +15,7 @@
     "uppercase": "Majuscules",
     "digits": "Chiffres",
     "symbols": "Symboles",
-    "siteName": "Nom du site",
+    "siteName": "Nom du site*",
     "generate": "Générer",
     "regenerate": "Re-générer",
     "addPassword": "Ajouter un mot de passe",

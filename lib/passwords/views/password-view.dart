@@ -15,7 +15,7 @@ import 'category-selection.dart';
 
 const DEFAULT_COLOR = Colors.red;
 
-enum MenuOption { edit, color, category, delete }
+enum MenuOption { color, duplicate, delete }
 
 class PasswordView extends StatefulWidget {
   final DeleteCallback onDelete;
@@ -37,6 +37,8 @@ class _PasswordViewState extends State<PasswordView> {
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _commentController = TextEditingController();
+  final _categoryController = TextEditingController();
+  final _favoriteController = TextEditingController();
 
   @override
   void initState() {
@@ -48,13 +50,15 @@ class _PasswordViewState extends State<PasswordView> {
     _commentController.text = password.comment ?? "";
     _currentColor = password.color;
     _currentCategory = password.category;
+    _categoryController.text = password.category?.name ?? '-';
+    _favoriteController.text = password.isFavorite ? 'Oui' : 'Non';
     super.initState();
   }
 
   _toggleFavorite() {
     setState(() {
       password.isFavorite = !password.isFavorite;
-      widget.onUpdate(password);
+      _favoriteController.text = password.isFavorite ? 'Oui' : 'Non';
     });
   }
 
@@ -70,9 +74,6 @@ class _PasswordViewState extends State<PasswordView> {
     password.comment = _commentController.text;
     password.color = _currentColor;
     widget.onUpdate(password);
-    setState(() {
-      _isEditing = !_isEditing;
-    });
   }
 
   _toggleHidePassword() {
@@ -82,6 +83,9 @@ class _PasswordViewState extends State<PasswordView> {
   }
 
   _toggleEdit() {
+    if (_isEditing) {
+      _updatePassword();
+    }
     setState(() {
       _isEditing = !_isEditing;
     });
@@ -145,6 +149,7 @@ class _PasswordViewState extends State<PasswordView> {
         });
     setState(() {
       _currentCategory = pickedCategory;
+      _categoryController.text = pickedCategory?.name ?? '-';
     });
     password.category = _currentCategory;
     widget.onUpdate(password);
@@ -152,19 +157,14 @@ class _PasswordViewState extends State<PasswordView> {
 
   void _handleMenuClick(MenuOption action) {
     switch (action) {
-      case MenuOption.edit:
-        {
-          _toggleEdit();
-        }
-        break;
       case MenuOption.color:
         {
           _showColorPicker();
         }
         break;
-      case MenuOption.category:
+      case MenuOption.duplicate:
         {
-          _showCategoryPicker();
+          // _showCategoryPicker();
         }
         break;
       case MenuOption.delete:
@@ -187,6 +187,8 @@ class _PasswordViewState extends State<PasswordView> {
     _nameController.dispose();
     _passwordController.dispose();
     _commentController.dispose();
+    _categoryController.dispose();
+    _favoriteController.dispose();
     super.dispose();
   }
 
@@ -223,16 +225,12 @@ class _PasswordViewState extends State<PasswordView> {
                               },
                               itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuOption>>[
                                 PopupMenuItem<MenuOption>(
-                                  value: MenuOption.edit,
-                                  child: Text('passwords.edit'.tr()),
-                                ),
-                                PopupMenuItem<MenuOption>(
                                   value: MenuOption.color,
                                   child: Text('passwords.editColor'.tr()),
                                 ),
                                 PopupMenuItem<MenuOption>(
-                                  value: MenuOption.category,
-                                  child: Text('passwords.editCategory'.tr()),
+                                  value: MenuOption.duplicate,
+                                  child: Text('Dupliquer'.tr()),
                                 ),
                                 PopupMenuItem<MenuOption>(
                                   value: MenuOption.delete,
@@ -249,12 +247,15 @@ class _PasswordViewState extends State<PasswordView> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            OutlinedButton(
-                              onPressed: () {
-                                _toggleEdit();
-                              },
-                              child: Text('Modifier', style: TextStyle(color: contrastedColor)),
-                            )
+                            Padding(
+                                padding: EdgeInsets.only(right: 8.0),
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    _toggleEdit();
+                                  },
+                                  child: Text(_isEditing ? 'Valider' : 'Modifier',
+                                      style: TextStyle(color: contrastedColor)),
+                                ))
                           ],
                         )
                       ],
@@ -282,22 +283,37 @@ class _PasswordViewState extends State<PasswordView> {
                               onPressed: () => _toggleHidePassword())
                         ],
                         _hidePassword),
-                    StaticFieldRow('Catégorie'.tr(), _currentCategory?.name, _isEditing, []),
-                    StaticFieldRow('Favori'.tr(), password.isFavorite ? 'Oui' : 'Non', _isEditing, []),
+                    InkWell(
+                        onTap: () {
+                          if (_isEditing) {
+                            _showCategoryPicker();
+                          }
+                        },
+                        child: StaticFieldRow(_categoryController, 'Catégorie'.tr(), _isEditing)),
+                    InkWell(
+                        onTap: () {
+                          if (_isEditing) {
+                            _toggleFavorite();
+                          }
+                        },
+                        child: StaticFieldRow(_favoriteController, 'Favori'.tr(), _isEditing)),
+                    // StaticFieldRow('Favori'.tr(), password.isFavorite ? 'Oui' : 'Non', _isEditing, []),
                     FieldRow(_urlController, _isEditing, 'passwords.URL'.tr(),
                         [IconButton(icon: Icon(Icons.open_in_browser), onPressed: () => _openUrl(password.url))]),
                     FieldRow(_commentController, _isEditing, 'passwords.comment'.tr(), []),
                   ],
                 )),
             Expanded(
-              flex: 1,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Label('passwords.lastUpdate'.tr() + ' le ' + format.format(this.password.updated)),
-                ],
-              ),
-            ),
+                flex: 1,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Label('passwords.lastUpdate'.tr() + ' le ' + format.format(this.password.updated)),
+                    ],
+                  ),
+                )),
           ],
         ),
         resizeToAvoidBottomInset: false);
@@ -337,11 +353,10 @@ class EditableField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return this.editing
-        ? Expanded(
-            child: TextField(
-                controller: controller,
-                decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
-                obscureText: this.hide))
+        ? TextField(
+            controller: controller,
+            decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true),
+            obscureText: this.hide)
         : Text(_displayValue(), style: TextStyle(fontSize: 16));
   }
 }
@@ -384,33 +399,31 @@ class FieldRow extends StatelessWidget {
 }
 
 class StaticFieldRow extends StatelessWidget {
+  final TextEditingController controller;
   final String label;
-  final String? value;
-  final List<Widget> actions;
   final bool editing;
 
-  StaticFieldRow(this.label, this.value, this.editing, this.actions);
+  StaticFieldRow(this.controller, this.label, this.editing);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
+    return Padding(
+        padding: EdgeInsets.only(bottom: 16.0),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Label(label),
-            Text(value ?? '', style: TextStyle(fontSize: 16)),
+            Container(
+                width: 200,
+                height: 40,
+                child: editing
+                    ? TextField(
+                        enabled: false,
+                        controller: controller,
+                        decoration: InputDecoration(contentPadding: EdgeInsets.symmetric(vertical: 0), isDense: true))
+                    : Text(controller.text, style: TextStyle(fontSize: 16)))
           ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [Row(children: actions.map((widget) => widget).toList())],
-        ),
-      ],
-    );
+        ));
   }
 }
 
