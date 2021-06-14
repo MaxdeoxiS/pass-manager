@@ -57,7 +57,9 @@ class _PasswordListState extends State<PasswordList> {
             _passwords = _passwords.where((pass) => filter.categories.contains(pass.category?.name)).toList();
           }
           if (null != filter.search) {
-            _passwords = _passwords.where((pass) => pass.name.contains(filter.search!) || pass.login.contains(filter.search!)).toList();
+            _passwords = _passwords
+                .where((pass) => pass.name.contains(filter.search!) || pass.login.contains(filter.search!))
+                .toList();
           }
           return Scaffold(
             body: _passwords.length > 0
@@ -84,7 +86,15 @@ class _PasswordListState extends State<PasswordList> {
                           tileColor: password.color);
                     },
                   )
-                : Text("Aucun mot de passe enregistré"),
+                : Padding(padding: EdgeInsets.only(bottom: 64.0), child: Center(
+                    child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                      Image.asset('assets/images/no-password.png'),
+                      Text("Oups", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+                      Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Text("Aucun mot de passe enregistré", style: TextStyle(fontSize: 15)))
+                    ]),
+                  )),
           );
         });
   }

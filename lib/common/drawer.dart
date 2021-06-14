@@ -11,9 +11,12 @@ class MyDrawer extends StatelessWidget {
             height: 120.0,
             width: 500,
             child: DrawerHeader(
-              child: Text('Header'),
+              child: Row(children: [
+                 Image.asset('assets/images/logo.png'),
+                Padding(padding: EdgeInsets.only(left: 24.0), child: Text('SecuriPass', style: TextStyle(color: Colors.white, fontSize: 18)))
+              ]),
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: Theme.of(context).primaryColor,
               ),
             ),
           ),

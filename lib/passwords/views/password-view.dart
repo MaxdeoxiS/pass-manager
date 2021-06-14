@@ -13,8 +13,6 @@ import 'package:pass_manager/passwords/entity/category.entity.dart';
 import '../entity/password.entity.dart';
 import 'category-selection.dart';
 
-const DEFAULT_COLOR = Colors.red;
-
 enum MenuOption { color, duplicate, delete }
 
 class PasswordView extends StatefulWidget {
@@ -204,7 +202,18 @@ class _PasswordViewState extends State<PasswordView> {
               children: [
                 Expanded(
                   child: Container(
-                    color: _currentColor,
+                    decoration: new BoxDecoration(
+                      gradient: new LinearGradient(
+                          colors: [
+                            _currentColor,
+                            ColorHelper.darkenColor(_currentColor),
+                          ],
+                          begin: const FractionalOffset(0.75, 1.0),
+                          end: const FractionalOffset(0.25, 0.1),
+                          stops: [0.0, 1.0],
+                          tileMode: TileMode.clamp),
+                    ),
+                    // color: _currentColor,
                     height: MediaQuery.of(context).size.height * .2,
                     padding: EdgeInsets.only(top: 24),
                     margin: EdgeInsets.only(bottom: 8),

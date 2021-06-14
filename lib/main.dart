@@ -92,6 +92,20 @@ class MainApp extends StatelessWidget {
     return page;
   }
 
+  Map<int, Color> color =
+  {
+    50:Color.fromRGBO(136, 1, 0, .50),
+    100:Color.fromRGBO(136, 1, 0, .60),
+    200:Color.fromRGBO(136, 1, 0, .65),
+    300:Color.fromRGBO(136, 1, 0, .70),
+    400:Color.fromRGBO(136, 1, 0, .75),
+    500:Color.fromRGBO(136, 1, 0, .80),
+    600:Color.fromRGBO(136, 1, 0, .85),
+    700:Color.fromRGBO(136, 1, 0, .90),
+    800:Color.fromRGBO(136, 1, 0, .95),
+    900:Color.fromRGBO(136, 1, 0, 1),
+  };
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -101,8 +115,8 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pass manager',
       theme: ThemeData(
-        primaryColor: Colors.red,
-        primarySwatch: Colors.red,
+        primaryColor: Color(0xFF880100),
+        primarySwatch: MaterialColor(0xFF880100, color),
       ),
       initialRoute: '/',
       onGenerateRoute: onGenerateRoute,
