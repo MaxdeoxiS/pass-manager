@@ -1,25 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_onboard/flutter_onboard.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Onboarding extends StatelessWidget {
   final PageController _pageController = PageController();
+
+  Future<void> onOnboardingDone(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('firstLaunch', true);
+    Navigator.pushReplacementNamed(context, "/passwords");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Provider<OnBoardState>(
       create: (_) => OnBoardState(),
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: OnBoard(
           pageController: _pageController,
           onSkip: () {
-            // print('skipped');
           },
           onDone: () {
-            // print('done tapped');
+            onOnboardingDone(context);
           },
           onBoardData: onBoardData,
           titleStyles: const TextStyle(
-            color: Colors.deepOrange,
+            color: Color(0xFF880100),
             fontSize: 18,
             fontWeight: FontWeight.w900,
             letterSpacing: 0.15,
@@ -30,36 +38,28 @@ class Onboarding extends StatelessWidget {
           ),
           pageIndicatorStyle: const PageIndicatorStyle(
             width: 100,
-            inactiveColor: Colors.deepOrangeAccent,
-            activeColor: Colors.deepOrange,
+            inactiveColor: Color(0xFF880100),
+            activeColor: Color(0xFF880100),
             inactiveSize: Size(8, 8),
             activeSize: Size(12, 12),
           ),
-          skipButton: TextButton(
-            onPressed: () {
-              // print('skipped');
-            },
-            child: const Text(
-              "Skip",
-              style: TextStyle(color: Colors.deepOrangeAccent),
-            ),
-          ),
+          skipButton: const Text(""),
           nextButton: Consumer<OnBoardState>(
             builder: (BuildContext context, OnBoardState state, Widget? child) {
               return InkWell(
-                onTap: () => _onNextTap(state),
+                onTap: () => _onNextTap(state, context),
                 child: Container(
                   width: 230,
                   height: 50,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    gradient: const LinearGradient(
-                      colors: [Colors.redAccent, Colors.deepOrangeAccent],
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF880100), Colors.red.shade900],
                     ),
                   ),
                   child: Text(
-                    state.isLastPage ? "Done" : "Next",
+                    state.isLastPage ? "C'est parti" : "Suivant",
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -74,7 +74,7 @@ class Onboarding extends StatelessWidget {
     );
   }
 
-  void _onNextTap(OnBoardState onBoardState) {
+  void _onNextTap(OnBoardState onBoardState, BuildContext context) {
     if (!onBoardState.isLastPage) {
       _pageController.animateToPage(
         onBoardState.page + 1,
@@ -82,27 +82,39 @@ class Onboarding extends StatelessWidget {
         curve: Curves.easeInOutSine,
       );
     } else {
-      // print("done");
+      onOnboardingDone(context);
     }
   }
 }
 
 final List<OnBoardModel> onBoardData = [
   const OnBoardModel(
-    title: "Set your own goals and get better",
-    description: "Goal support your motivation and inspire you to work harder",
-    imgUrl: "assets/images/weight.png",
+    title: "Bienvenue dans SecuriPass",
+    description: "Cette application vous permet de générer et stocker vos mots de passe de manière sécurisée, sur votre smartphone.",
+    imgUrl: "assets/images/onboarding1.gif",
   ),
   const OnBoardModel(
-    title: "Track your progress with statistics",
+    title: "100% sécurisé",
     description:
-    "Analyse personal result with detailed chart and numerical values",
-    imgUrl: 'assets/images/graph.png',
+    "Vos mots de passe sont stockés sur votre téléphone, et nulle part ailleurs. \n \n Vos mots de passe sont chiffrés, et l'accès à l'application requiert une sécurité biométrique ou par code PIN.",
+    imgUrl: 'assets/images/onboarding2.gif',
   ),
   const OnBoardModel(
-    title: "Create photo comparissions and share your results",
+    title: "Organisez vos mots de passe comme vous le voulez",
     description:
-    "Take before and after photos to visualize progress and get the shape that you dream about",
-    imgUrl: 'assets/images/phone.png',
+    "Couleur, icône, catégorie, commentaire, favoris, lien de modification... \n \n Gérez vos mots de passe comme bon vous semble, et retrouvez-les rapidement grâce aux différents filtres possibles",
+    imgUrl: 'assets/images/onboarding3.gif',
+  ),
+  const OnBoardModel(
+    title: "Toujours gratuit",
+    description:
+    "Développé par une seule personne sur son temps libre, SecuriPass restera toujours gratuite, sans pub et open-source, même lors des prochaines mises à jour: \n Gestion des cartes (CB, Visa, Cartes fidélité...) \n Gestion de notes \n Nouvelles fonctionnalités pour les mots de passe: paramétrer une date d'expiration, notificaiton, historique, analyse de la sécurité des mots de passe",
+    imgUrl: 'assets/images/onboarding4.gif',
+  ),
+  const OnBoardModel(
+    title: "Prêt ?",
+    description:
+    "Créez votre premier mot de passe et découvrez plus en détail les fonctionnalités de SecuriPass",
+    imgUrl: 'assets/images/onboarding5.gif',
   ),
 ];

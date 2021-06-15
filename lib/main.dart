@@ -9,6 +9,7 @@ import 'package:pass_manager/settings/About.dart';
 import 'package:pass_manager/settings/Import.dart';
 import 'package:pass_manager/settings/Settings.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import 'cards/cards-list.dart';
@@ -29,18 +30,26 @@ void main() async {
     var uuid = Uuid();
     await storage.write(key: 'privateKey', value: uuid.v4().substring(0, 32));
   }
+  final prefs = await SharedPreferences.getInstance();
+  final bool firstLaunch = prefs.getBool('firstLaunch') ?? true;
+
+  String initialRoute = firstLaunch ? '/onboarding' : '/';
 
   runApp(
     EasyLocalization(
         supportedLocales: [Locale('en', ''), Locale('fr', '')],
         path: 'assets/translations',
         fallbackLocale: Locale('en', ''),
-        child: MainApp()
+        child: MainApp(initialRoute: initialRoute)
     ),
   );
 }
 
 class MainApp extends StatelessWidget {
+  String initialRoute;
+
+  MainApp({required this.initialRoute});
+
   /// Build page route with provided [page] content
   PageRouteBuilder buildPageRoute(Widget page) {
     return PageRouteBuilder(
@@ -56,6 +65,9 @@ class MainApp extends StatelessWidget {
   Route onGenerateRoute(RouteSettings settings) {
     Route page;
     switch (settings.name) {
+      case "/onboarding":
+        page = buildPageRoute(Onboarding());
+        break;
       case "/":
       case "/passwords":
         page = buildPageRoute(Page(body: PasswordList(), title: Text('passwords.title'.tr()), routeName: "passwords"));
@@ -115,12 +127,11 @@ class MainApp extends StatelessWidget {
     ]);
     return MaterialApp(
       title: 'Pass manager',
-      home: Onboarding(),
       theme: ThemeData(
         primaryColor: Color(0xFF880100),
         primarySwatch: MaterialColor(0xFF880100, color),
       ),
-      initialRoute: '/',
+      initialRoute: initialRoute,
       onGenerateRoute: onGenerateRoute,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,

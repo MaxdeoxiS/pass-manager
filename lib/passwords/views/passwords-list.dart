@@ -67,7 +67,6 @@ class _PasswordListState extends State<PasswordList> {
                     itemCount: _passwords.length,
                     itemBuilder: (context, index) {
                       Password password = _passwords[index];
-                      print(password.category?.icon);
                       return ListTile(
                           leading: Icon(IconData(password.category?.icon ?? 0, fontFamily: "MaterialIcons"), size: 35),
                           title: Text('${password.name}',
@@ -89,7 +88,7 @@ class _PasswordListState extends State<PasswordList> {
                 : Padding(padding: EdgeInsets.only(bottom: 64.0), child: Center(
                     child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                       Image.asset('assets/images/no-password.png'),
-                      Text("Oups", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+                      Text("Oups", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30, color: Colors.brown.shade300)),
                       Padding(
                           padding: const EdgeInsets.only(top: 16.0),
                           child: Text("Aucun mot de passe enregistré", style: TextStyle(fontSize: 15)))

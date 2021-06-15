@@ -76,7 +76,6 @@ class _ExportState extends State<Export> {
 
       var encoder = ZipFileEncoder();
       encoder.create(path + '/test.zip');
-      print(encFilepath);
       encoder.addFile(File(encFilepath));
       encoder.addFile(File('/data/data/com.maxdeoxis.pass_manager/databases/export'));
       encoder.close();
@@ -132,7 +131,6 @@ class _ExportState extends State<Export> {
                       onChanged: field["disabled"] ? null : (bool? value) {
                         setState(() {
                           final newItem = items.firstWhere((el) => el["name"] == field["name"]);
-                          print(newItem);
                           newItem["checked"] = !newItem["checked"];
                         });
                       },

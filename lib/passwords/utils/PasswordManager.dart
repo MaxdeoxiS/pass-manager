@@ -28,7 +28,6 @@ class PasswordManager {
     final passwordDao = await dbHelper.getPasswordDao();
     final encryptedLogin = await crypto.encrypt(login);
     final encryptedPassword = await crypto.encrypt(value);
-    print(category);
     final Password password =
         new Password(name, encryptedLogin, encryptedPassword, url, comment, DateTime.now(), color, category, isFavorite);
     passwordDao.insertPassword(password);
