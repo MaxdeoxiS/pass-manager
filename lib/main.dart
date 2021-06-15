@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide Page, Key;
+import 'package:pass_manager/onboarding/Onboarding.dart';
 import 'package:pass_manager/passwords/views/password-creation.dart';
 import 'package:pass_manager/passwords/views/password-view.dart';
 import 'package:pass_manager/passwords/views/passwords-list.dart';
@@ -114,6 +115,7 @@ class MainApp extends StatelessWidget {
     ]);
     return MaterialApp(
       title: 'Pass manager',
+      home: Onboarding(),
       theme: ThemeData(
         primaryColor: Color(0xFF880100),
         primarySwatch: MaterialColor(0xFF880100, color),
