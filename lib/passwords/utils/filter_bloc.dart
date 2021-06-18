@@ -15,6 +15,11 @@ class FilterBloc {
     update();
   }
 
+  void disableFavorites() {
+    provider.disableFavorites();
+    update();
+  }
+
   // Categories
   void addCategory(String s) {
     provider.addCategory(s);

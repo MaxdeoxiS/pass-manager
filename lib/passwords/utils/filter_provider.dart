@@ -9,6 +9,7 @@ class FilterProvider {
 
    // Favorites
    void toggleFavorites() => filter.favorites = !filter.favorites;
+   void disableFavorites() => filter.favorites = false;
 
    // Categories
   void addCategory(String s) => filter.categories.add(s);

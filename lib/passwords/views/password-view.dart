@@ -239,7 +239,7 @@ class _PasswordViewState extends State<PasswordView> {
                                 ),
                                 PopupMenuItem<MenuOption>(
                                   value: MenuOption.duplicate,
-                                  child: Text('Dupliquer'.tr()),
+                                  child: Text('Dupliquer'.tr(), style: TextStyle(color: Colors.grey)),
                                 ),
                                 PopupMenuItem<MenuOption>(
                                   value: MenuOption.delete,

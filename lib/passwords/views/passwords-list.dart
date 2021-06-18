@@ -30,7 +30,7 @@ class _PasswordListState extends State<PasswordList> {
   }
 
   void _toggleFavorite(Password password) async {
-    _passwordManager.toggleFavorite(password);
+    await _passwordManager.toggleFavorite(password);
     await _updateList();
   }
 
@@ -58,7 +58,7 @@ class _PasswordListState extends State<PasswordList> {
           }
           if (null != filter.search) {
             _passwords = _passwords
-                .where((pass) => pass.name.contains(filter.search!) || pass.login.contains(filter.search!))
+                .where((pass) => pass.name.toLowerCase().contains(filter.search!.toLowerCase()) || pass.login.toLowerCase().contains(filter.search!.toLowerCase()))
                 .toList();
           }
           return Scaffold(

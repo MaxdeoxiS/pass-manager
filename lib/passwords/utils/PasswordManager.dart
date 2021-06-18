@@ -28,8 +28,8 @@ class PasswordManager {
     final passwordDao = await dbHelper.getPasswordDao();
     final encryptedLogin = await crypto.encrypt(login);
     final encryptedPassword = await crypto.encrypt(value);
-    final Password password =
-        new Password(name, encryptedLogin, encryptedPassword, url, comment, DateTime.now(), color, category, isFavorite);
+    final Password password = new Password(
+        name, encryptedLogin, encryptedPassword, url, comment, DateTime.now(), color, category, isFavorite);
     passwordDao.insertPassword(password);
   }
 
@@ -42,25 +42,33 @@ class PasswordManager {
     final passwordDao = await dbHelper.getPasswordDao();
     final _categoryManager = CategoryManager.instance;
     List<Password> passwords = await passwordDao.findAllPasswords();
-    passwords.forEach((p) async => {
-      p.login = await crypto.decrypt(p.login),
-      p.value = await crypto.decrypt(p.value),
-      // if (null != p.category && null != p.category?.name) {
-      //   p.category = await _categoryManager.getCategory(p.category?.name)
-      // }
-      p.category = (null != p.category?.name) ? await _categoryManager.getCategory(p.category?.name) : null
-    });
+    for (Password p in passwords) {
+      p.login = await crypto.decrypt(p.login);
+      p.value = await crypto.decrypt(p.value);
+      p.category = (null != p.category?.name) ? await _categoryManager.getCategory(p.category?.name) : null;
+    }
+    // passwords.forEach((p) async => {
+    //   p.login = await crypto.decrypt(p.login),
+    //   p.value = await crypto.decrypt(p.value),
+    //   p.category = (null != p.category?.name) ? await _categoryManager.getCategory(p.category?.name) : null
+    // });
+    print(passwords[0].category?.icon);
+    print(passwords[1].category?.icon);
     return passwords;
   }
 
-  Future<int> updatePassword(Password password) async {
+  Future<void> updatePassword(Password password) async {
     final passwordDao = await dbHelper.getPasswordDao();
     password.login = await crypto.encrypt(password.login);
     password.value = await crypto.encrypt(password.value);
-    return await passwordDao.updatePassword(password);
+    try {
+      await passwordDao.updatePassword(password);
+    } catch (e) {
+      print(e);
+    }
   }
 
-  Future<int> toggleFavorite(Password password) async {
+  Future<void> toggleFavorite(Password password) async {
     password.isFavorite = !password.isFavorite;
     return this.updatePassword(password);
   }

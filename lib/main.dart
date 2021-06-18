@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide Page, Key;
 import 'package:pass_manager/onboarding/Onboarding.dart';
+import 'package:pass_manager/onboarding/beforeOnboarding.dart';
 import 'package:pass_manager/passwords/views/password-creation.dart';
 import 'package:pass_manager/passwords/views/password-view.dart';
 import 'package:pass_manager/passwords/views/passwords-list.dart';
@@ -31,9 +32,9 @@ void main() async {
     await storage.write(key: 'privateKey', value: uuid.v4().substring(0, 32));
   }
   final prefs = await SharedPreferences.getInstance();
-  final bool firstLaunch = prefs.getBool('firstLaunch') ?? true;
+  final bool firstLaunch = true;// prefs.getBool('firstLaunch') ?? true;
 
-  String initialRoute = firstLaunch ? '/onboarding' : '/';
+  String initialRoute = firstLaunch ? '/onboarding/lang' : '/';
 
   runApp(
     EasyLocalization(
@@ -65,7 +66,10 @@ class MainApp extends StatelessWidget {
   Route onGenerateRoute(RouteSettings settings) {
     Route page;
     switch (settings.name) {
-      case "/onboarding":
+      case "/onboarding/lang":
+        page = buildPageRoute(BeforeOnboarding());
+        break;
+      case "/onboarding/starter":
         page = buildPageRoute(Onboarding());
         break;
       case "/":
@@ -86,7 +90,7 @@ class MainApp extends StatelessWidget {
         page = buildPageRoute(PasswordView(password: args.password, onDelete: args.onDelete, onUpdate: args.onUpdate));
         break;
       case "/settings/language":
-        page = buildPageRoute(Page(body: Language(), title: Text('settings.language'.tr()), routeName: "/language"));
+        page = buildPageRoute(Page(body: Language(fromOnboarding: false), title: Text('settings.language'.tr()), routeName: "/language"));
         break;
       case "/settings/import":
         page = buildPageRoute(Page(body: Import(), title: Text('settings.import'.tr()), routeName: "/language"));

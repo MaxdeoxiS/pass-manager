@@ -8,7 +8,7 @@ class Onboarding extends StatelessWidget {
 
   Future<void> onOnboardingDone(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('firstLaunch', true);
+    prefs.setBool('firstLaunch', false);
     Navigator.pushReplacementNamed(context, "/passwords");
   }
 

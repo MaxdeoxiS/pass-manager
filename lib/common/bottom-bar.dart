@@ -65,6 +65,17 @@ class _BottomBarState extends State<BottomBar> {
       });
   }
 
+  _onClearFilter() {
+    blocFilter.setSearch("");
+    blocFilter.setCategories([]);
+    blocFilter.disableFavorites();
+    setState(() {
+      filterOnFavorites = false;
+      searchNotEmpy = false;
+      activeCategories = [];
+    });
+  }
+
   _onSearchUpdated() {
     blocFilter.setSearch(_searchController.text);
   }
@@ -114,7 +125,7 @@ class _BottomBarState extends State<BottomBar> {
             IconButton(
               tooltip: "bottomBar.categoryFilter".tr(),
               icon: Icon(Icons.clear_outlined, color: Theme.of(context).colorScheme.primary),
-              onPressed: () => _onCategoryPressed(),
+              onPressed: () => _onClearFilter(),
             ) : Icon(Icons.file_download),
           ],
         ),
