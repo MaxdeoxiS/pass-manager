@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart' hide Page, Key;
+import 'package:local_auth/auth_strings.dart';
 import 'package:pass_manager/onboarding/Onboarding.dart';
 import 'package:pass_manager/onboarding/beforeOnboarding.dart';
 import 'package:pass_manager/passwords/views/password-creation.dart';
@@ -12,6 +15,8 @@ import 'package:pass_manager/settings/Settings.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import 'package:local_auth/local_auth.dart';
+
 
 import 'cards/cards-list.dart';
 import 'common/page.dart';
@@ -22,6 +27,18 @@ import 'settings/Export.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
+  var localAuth = LocalAuthentication();
+
+  try {
+    bool auth = await localAuth.authenticate(localizedReason: 'Une sécurité est requise pour accéder à cette application', biometricOnly: false, stickyAuth: true);
+    if (!auth) {
+      SystemNavigator.pop();
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    }
+  } on PlatformException catch (e) {
+    print(e);
+  }
 
   final storage = new FlutterSecureStorage();
 
